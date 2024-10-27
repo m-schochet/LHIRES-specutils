@@ -201,14 +201,14 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         plt.plot(xvals[~bad_pixels], fitted_model(xvals[~bad_pixels]))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fitted_model(xvals[~bad_pix_mask])
+        trace = fitted_model(xvals[~bad_pixels])
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
-                                    for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+                                    for yval, ii in zip(trace, xvals[~bad_pixels])])
             npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
-                                for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+                                for yval, ii in zip(trace, xvals[~bad_pixels])])
             npix_ret = (npix, npix)
         mean_trace_profile = cutouts.mean(axis=0)
         
