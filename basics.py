@@ -49,17 +49,20 @@ def image_reduction(object_image, list_flats, list_bias=None, list_dark=None):
     science images. However if you did not take darks, the function does not require them to run
 
     Inputs:
-        fits_file: image to be reduced (must be a fits file that has already been placed into a variable with fits.getdata)
-        list_flats: list of flat frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+        object_image: (np.ndarray) image to be reduced (must be a fits file that has already been placed into a variable with fits.getdata)
+        
+        list_flats: (list) list of flat frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+        
         *Note*
-            if there is not a list of flats, simply use [] as thflat list input
+            if there is not a list of flats, simply use [] as the flat list input
 
         Optional:
-            list_bias: list of bias frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
-            list_dark: list of dark frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+            list_bias: (list) list of bias frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+            
+            list_dark: (list) list of dark frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
 
     Returns: 
-        - science_image: the reduced science image of an object
+        science_image: (np.ndarray) the reduced science image of an object
     """
     if(list_flats != []):
         master_flat = np.median(list_flats)
@@ -103,10 +106,10 @@ def plotter(obj_image, yval=None):
     This function is meant to take an image and determine the optimal scaling to plot it
     
     Inputs:
-        obj_image: image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
+        obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
         Optional:
-            y_val: yval to calculate minimum/maximum scaling values for the plot
+            y_val: (int) yval to calculate minimum/maximum scaling values for the plot
             
             *Note*
                 This is for use if the plotter does not automatically accurately scale the image using min/maxing
@@ -135,35 +138,47 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
     hot pixels present, feel free to rerun this function with the hot pixel inputs specified
         
     Inputs:
-        obj_image: image to be traced (must be a fits file that has already been placed into a variable with fits.getdata)
-        min_y: what is the minimum y-axis value from where the weighted pixels should be judged
-        max_y: what is the maximum y-axis value from where the weighted pixels should be judged
-        model: use this to determine the fitter you want to use (
+        obj_image: (np.ndarray) image to be traced (must be a fits file that has already been placed into a variable with fits.getdata)
+        
+        min_y: (int) what is the minimum y-axis value from where the weighted pixels should be judged
+        
+        max_y: (int) what is the maximum y-axis value from where the weighted pixels should be judged
+        
+        model: (astropy.modeling.models) use this to determine the fitter you want to use
             (expected either 2-term or 3-term polynomial [polymodel2/polymodel3], but other astropy.modeling.models can work)
-        npix: number of pixels to be cut out +/- to determine the weights of the trace (if npix_bot is supplied, this is the number of pixels to be cut from the top)
-        plot_cutouts: set to True if you want to see the effect of getting the weights
+        
+        npix: (int) number of pixels to be cut out +/- to determine the weights of the trace 
+            (if npix_bot is supplied, this is the number of pixels to be cut from the top)
+        
+        plot_cutouts: (boolean) set to True if you want to see the effect of getting the weights
         
         Optional: 
-            hot_pix_min_cut: if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
-            hot_pix_max_cut: if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
+            hot_pix_min_cut: (int) if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
+            
+            hot_pix_max_cut: (int) if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
             
             *Note*
                 if these above optional parameters are given, the function needs to be called with four returned variables
                 (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
     
-            npix_bot: if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
+            npix_bot: (int) if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
     Returns:
         *without hot pixel cut outs* (3)
-            - fitted_model: the trace of our object (Polynomial1D)
-            - mean_trace_profile: the weights of the trace for making spectra (Array)
-            - npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
+            fitted_model: the trace of our object (Polynomial1D)
+            
+            mean_trace_profile: the weights of the trace for making spectra (Array)
+            
+            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
 
         *with hot pixel cut outs* (4)
-            - bad_pixels: the hot pixel mask (MaskedArray)
-            - fitted_model: the trace of our object (Polynomial1D)
-            - mean_trace_profile: the weights of the trace for making spectra (Array)
-            - npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
+            bad_pixels: the hot pixel mask (MaskedArray)
+            
+            fitted_model: the trace of our object (Polynomial1D)
+            
+            mean_trace_profile: the weights of the trace for making spectra (Array)
+            
+            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
     """
     # Instantiating everything
     image_array = np.array(obj_image)
