@@ -123,7 +123,7 @@ def plotter(obj_image, yval=None):
 
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
 
-def tracer(obj_image, min_y, max_y, model, hot_pix_min_cut = None, hot_pix_max_cut = None):
+def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
     """
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
@@ -135,16 +135,22 @@ def tracer(obj_image, min_y, max_y, model, hot_pix_min_cut = None, hot_pix_max_c
         max_y = what is the maximum y-axis value from where the weighted pixels should be judged
         model = use this to determine the fitter you want to use (
             (expected either 2-term or 3-term polynomial [polymodel2/polymodel3], but other astropy.modeling.models can work)
-
+        npix = number of pixels to be cut out +/- to determine the weights of the trace (if npix_bot is supplied, this is the number of pixels to be cut from the top)
+        plot_cutouts = set to True if you want to see the effect of getting the weights
+        
     Optional: 
         hot_pix_min_cut = if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
         hot_pix_max_cut = if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
         
         *Note*
-            if these optional parameters are given, the function needs to be called with three returned variables
-            (both the weighted y-axis values, fitted trace, and the bad pixels mask)    
+            if these optional parameters are given, the function needs to be called with four returned variables
+            (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
+
+        npix_bot = if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
+
         
     """
+    # Instantiating everything
     image_array = np.array(obj_image)
     image_array = image_array - np.median(image_array)
     
@@ -154,25 +160,68 @@ def tracer(obj_image, min_y, max_y, model, hot_pix_min_cut = None, hot_pix_max_c
     
     weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,:])
 
+    # Determining trace
     if ((hot_pix_min_cut != None) & (hot_pix_max_cut != None)):
         bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
         
-        fitted_polymodel = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
-        print(fitted_polymodel)
+        fitted_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
+        print(fitted_model)
         
         plt.plot(xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels], 'x')
-        plt.plot(xvals[~bad_pixels], fitted_polymodel(xvals[~bad_pixels]))
-        plt.title("Traced spectra on weighted y-values")
-        
-        return weighted_yaxis_values, fitted_polymodel, bad_pixels
-    
-    else:
-        fitted_polymodel = linfitter(model, xvals, weighted_yaxis_values)
-        print(fitted_polymodel)
-        
-        plt.plot(xvals, weighted_yaxis_values, 'x')
-        plt.plot(xvals, fitted_polymodel(xvals))
+        plt.plot(xvals[~bad_pixels], fitted_model(xvals[~bad_pixels]))
         plt.title("Traced spectra on weighted y-values")
 
+        trace = fitted_model(xvals[~bad_pix_mask])
+        if(npix_bot != None):
+            cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
+                                    for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+        else:
+            cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
+                                for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+        mean_trace_profile = cutouts.mean(axis=0)
         
-        return weighted_yaxis_values, fitted_polymodel
+        # Plotting trace
+        if(plot_cutouts==True):
+            fig = plt.figure(figsize=(12,8))
+            ax1 = plt.subplot(1,2,1)
+            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
+                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=0, vmax=100)
+            ax1.set_aspect(20)
+            ax1.set_title("We go from this...")
+            ax2 = plt.subplot(1,2,2)
+            ax2.imshow(cutouts.T, vmin=0, vmax=100)
+            ax2.set_title("...to this")
+            ax2.set_aspect(20)
+        return weighted_yaxis_values, bad_pixels, fitted_model, mean_trace_profile
+    
+    else:
+        fitted_model = linfitter(model, xvals, weighted_yaxis_values)
+        print(fitted_model)
+        
+        plt.plot(xvals, weighted_yaxis_values, 'x')
+        plt.plot(xvals, fitted_model(xvals))
+        plt.title("Traced spectra on weighted y-values")
+
+        trace = fitted_model(xvals)
+        if(npix_bot != None):
+            cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
+                            for yval, ii in zip(trace, xvals)])
+        else:
+            cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
+                                for yval, ii in zip(trace, xvals)])
+        mean_trace_profile = cutouts.mean(axis=0)
+
+        #Plotting trace
+        if(plot_cutouts==True):
+            fig = plt.figure(figsize=(12,8))
+            ax1 = plt.subplot(1,2,1)
+            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
+                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=0, vmax=100)
+            ax1.set_aspect(20)
+            ax1.set_title("We go from this...")
+            ax2 = plt.subplot(1,2,2)
+            ax2.imshow(cutouts.T, vmin=0, vmax=100)
+            ax2.set_title("...to this")
+            ax2.set_aspect(20)
+        return weighted_yaxis_values, fitted_model, mean_trace_profile
+
