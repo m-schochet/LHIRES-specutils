@@ -54,10 +54,12 @@ def image_reduction(object_image, list_flats, list_bias=None, list_dark=None):
         *Note*
             if there is not a list of flats, simply use [] as thflat list input
 
-    Optional:
-        list_bias: list of bias frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
-        list_dark: list of dark frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+        Optional:
+            list_bias: list of bias frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
+            list_dark: list of dark frames (each one must be a fits file that has already been placed into a variable with fits.getdata)
 
+    Returns: 
+        - science_image: the reduced science image of an object
     """
     if(list_flats != []):
         master_flat = np.median(list_flats)
@@ -95,7 +97,7 @@ def image_reduction(object_image, list_flats, list_bias=None, list_dark=None):
     elif(list_flats == []):
         science_image = object_image
         return science_image
-
+        
 def plotter(obj_image, yval=None):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
@@ -103,12 +105,15 @@ def plotter(obj_image, yval=None):
     Inputs:
         obj_image: image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
-    Optional:
-        y_val = yval to calculate minimum/maximum scaling values for the plot
-        
-        *Note*
-            This is for use if the plotter does not automatically accurately scale the image using min/maxing
-            such that a specific y-axis value needs to be given for accurate scaling
+        Optional:
+            y_val = yval to calculate minimum/maximum scaling values for the plot
+            
+            *Note*
+                This is for use if the plotter does not automatically accurately scale the image using min/maxing
+                such that a specific y-axis value needs to be given for accurate scaling
+
+    Returns: 
+        Nothing, this function is for plotting
            
     """
     if(yval != None):
@@ -138,17 +143,27 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         npix = number of pixels to be cut out +/- to determine the weights of the trace (if npix_bot is supplied, this is the number of pixels to be cut from the top)
         plot_cutouts = set to True if you want to see the effect of getting the weights
         
-    Optional: 
-        hot_pix_min_cut = if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
-        hot_pix_max_cut = if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
-        
-        *Note*
-            if these optional parameters are given, the function needs to be called with four returned variables
-            (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
+        Optional: 
+            hot_pix_min_cut = if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
+            hot_pix_max_cut = if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
+            
+            *Note*
+                if these optional parameters are given, the function needs to be called with four returned variables
+                (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
+    
+            npix_bot = if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
-        npix_bot = if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
+    Returns:
+        *without hot pixel cut outs* (3)
+            - fitted_model: the trace of our object (Polynomial1D)
+            - mean_trace_profile: the weights of the trace for making spectra (Array)
+            - npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
 
-        
+        *with hot pixel cut outs* (4)
+            - bad_pixels: the hot pixel mask (MaskedArray)
+            - fitted_model: the trace of our object (Polynomial1D)
+            - mean_trace_profile: the weights of the trace for making spectra (Array)
+            - npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
     """
     # Instantiating everything
     image_array = np.array(obj_image)
@@ -175,9 +190,11 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                                     for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+            npix_ret = (npix, npix_bot)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
                                 for yval, ii in zip(trace, xvals[~bad_pix_mask])])
+            npix_ret = (npix, npix)
         mean_trace_profile = cutouts.mean(axis=0)
         
         # Plotting trace
@@ -192,7 +209,8 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
             ax2.imshow(cutouts.T, vmin=0, vmax=100)
             ax2.set_title("...to this")
             ax2.set_aspect(20)
-        return weighted_yaxis_values, bad_pixels, fitted_model, mean_trace_profile
+        
+        return bad_pixels, fitted_model, mean_trace_profile, npix_ret
     
     else:
         fitted_model = linfitter(model, xvals, weighted_yaxis_values)
@@ -206,9 +224,11 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         if(npix_bot != None):
             cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                             for yval, ii in zip(trace, xvals)])
+            npix_ret = (npix, npix_bot)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
                                 for yval, ii in zip(trace, xvals)])
+            npix_ret = (npix, npix)
         mean_trace_profile = cutouts.mean(axis=0)
 
         #Plotting trace
@@ -223,5 +243,4 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
             ax2.imshow(cutouts.T, vmin=0, vmax=100)
             ax2.set_title("...to this")
             ax2.set_aspect(20)
-        return weighted_yaxis_values, fitted_model, mean_trace_profile
-
+        return fitted_model, mean_trace_profile, npix_ret
