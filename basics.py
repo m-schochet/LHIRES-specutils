@@ -190,7 +190,7 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                                     for yval, ii in zip(trace, xvals[~bad_pix_mask])])
-            npix_ret = (npix, npix_bot)
+            npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
                                 for yval, ii in zip(trace, xvals[~bad_pix_mask])])
@@ -224,7 +224,7 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         if(npix_bot != None):
             cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                             for yval, ii in zip(trace, xvals)])
-            npix_ret = (npix, npix_bot)
+            npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
                                 for yval, ii in zip(trace, xvals)])
