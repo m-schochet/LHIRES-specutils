@@ -106,7 +106,7 @@ def plotter(obj_image, yval=None):
         obj_image: image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
         Optional:
-            y_val = yval to calculate minimum/maximum scaling values for the plot
+            y_val: yval to calculate minimum/maximum scaling values for the plot
             
             *Note*
                 This is for use if the plotter does not automatically accurately scale the image using min/maxing
@@ -136,22 +136,22 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
         
     Inputs:
         obj_image: image to be traced (must be a fits file that has already been placed into a variable with fits.getdata)
-        min_y = what is the minimum y-axis value from where the weighted pixels should be judged
-        max_y = what is the maximum y-axis value from where the weighted pixels should be judged
-        model = use this to determine the fitter you want to use (
+        min_y: what is the minimum y-axis value from where the weighted pixels should be judged
+        max_y: what is the maximum y-axis value from where the weighted pixels should be judged
+        model: use this to determine the fitter you want to use (
             (expected either 2-term or 3-term polynomial [polymodel2/polymodel3], but other astropy.modeling.models can work)
-        npix = number of pixels to be cut out +/- to determine the weights of the trace (if npix_bot is supplied, this is the number of pixels to be cut from the top)
-        plot_cutouts = set to True if you want to see the effect of getting the weights
+        npix: number of pixels to be cut out +/- to determine the weights of the trace (if npix_bot is supplied, this is the number of pixels to be cut from the top)
+        plot_cutouts: set to True if you want to see the effect of getting the weights
         
         Optional: 
-            hot_pix_min_cut = if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
-            hot_pix_max_cut = if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
+            hot_pix_min_cut: if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
+            hot_pix_max_cut: if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
             
             *Note*
-                if these optional parameters are given, the function needs to be called with four returned variables
+                if these above optional parameters are given, the function needs to be called with four returned variables
                 (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
     
-            npix_bot = if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
+            npix_bot: if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
     Returns:
         *without hot pixel cut outs* (3)
