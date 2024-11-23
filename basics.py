@@ -105,7 +105,7 @@ def scales(obj_image, yval=None):
     """
     This function is meant to return the vmin-vmax values for a certain image (and for a specific y-axis value if needed)
     
-    Inputs:
+    Inputs (1, optional 2):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
         Optional:
@@ -115,7 +115,7 @@ def scales(obj_image, yval=None):
                 This is for use if the plotter does not automatically accurately scale the image using min/maxing
                 such that a specific y-axis value needs to be given for accurate scaling
 
-    Returns: 
+    Returns (1): 
         vmin-vmax pairs
            
     """
@@ -134,7 +134,7 @@ def plotter(obj_image, yval=None):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
     
-    Inputs:
+    Inputs (1, optional 2):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
         Optional:
@@ -144,7 +144,7 @@ def plotter(obj_image, yval=None):
                 This is for use if the plotter does not automatically accurately scale the image using min/maxing
                 such that a specific y-axis value needs to be given for accurate scaling
 
-    Returns: 
+    Returns (1): 
         Nothing, this function is for plotting
            
     """
@@ -198,8 +198,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
     
             npix_bot: (int) if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
-    Returns:
-        *without hot pixel cut outs* (3)
+    Returns (5, optional 6):
+        *without hot pixel cut outs (5)*
             fitted_model: the trace of our object (Polynomial1D)
             
             mean_trace_profile: the weights of the trace for making spectra (Array)
@@ -208,7 +208,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
 
             weighted_yaxis_values: the weighted y-axis used to make the images (Array)
 
-        *with hot pixel cut outs* (4)
+            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
+        *with hot pixel cut outs (6)* 
             bad_pixels: the hot pixel mask (MaskedArray)
     """
     # Instantiating everything
@@ -262,7 +263,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
         
-        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, bad_pixels
+        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
     
     else:
         fitted_model = linfitter(model, xvals, weighted_yaxis_values)
@@ -295,4 +296,4 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
-        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values
+        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
