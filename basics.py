@@ -262,7 +262,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
         
-        return fitted_model, mean_trace_profile, weighted_yaxis_values, bad_pixels
+        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, bad_pixels
     
     else:
         fitted_model = linfitter(model, xvals, weighted_yaxis_values)
