@@ -161,7 +161,7 @@ def plotter(obj_image, yval=None):
 
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
 
-def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
+def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
     """
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
@@ -179,6 +179,12 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, npix_bot=None, hot_
         
         npix: (int) number of pixels to be cut out +/- to determine the weights of the trace 
             (if npix_bot is supplied, this is the number of pixels to be cut from the top)
+
+        vmin: (int) vmin scaling on the images for plot_cutouts
+
+        vmax: (int) vmax scaling on the images for plot_cutouts
+
+        aspect: (int) how scaled should the cutout plots be
         
         plot_cutouts: (boolean) set to True if you want to see the effect of getting the weights
         
