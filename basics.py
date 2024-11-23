@@ -125,7 +125,7 @@ def plotter(obj_image, yval=None):
         middle_y_axis = int(np.shape(obj_image[:,0])[0]/2)
     
     histogram = plt.hist(obj_image[middle_y_axis].flatten(), bins='auto')
-    
+    plt.clf()
     vmin = histogram[1].min()
     vmax = histogram[1].max()
 
