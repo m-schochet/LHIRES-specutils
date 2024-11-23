@@ -212,8 +212,6 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             fitted_model: the trace of our object (Polynomial1D)
             
             mean_trace_profile: the weights of the trace for making spectra (Array)
-            
-            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
     """
     # Instantiating everything
     image_array = np.array(obj_image)
