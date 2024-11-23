@@ -260,12 +260,12 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
                        extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
-            ax1.set_aspect(20)
+            ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
-            ax2.set_aspect(20)
+            ax2.set_aspect(aspect)
         
         return bad_pixels, fitted_model, mean_trace_profile, npix_ret
     
@@ -294,10 +294,10 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
                        extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
-            ax1.set_aspect(40)
+            ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
-            ax2.set_aspect(40)
+            ax2.set_aspect(aspect)
         return fitted_model, mean_trace_profile, npix_ret
