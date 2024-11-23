@@ -100,7 +100,37 @@ def image_reduction(object_image, list_flats, list_bias=None, list_dark=None):
     elif(list_flats == []):
         science_image = object_image
         return science_image
-        
+
+def scales(obj_image, yval=None):
+    """
+    This function is meant to return the vmin-vmax values for a certain image (and for a specific y-axis value if needed)
+    
+    Inputs:
+        obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
+
+        Optional:
+            y_val: (int) yval to calculate minimum/maximum scaling values for the plot
+            
+            *Note*
+                This is for use if the plotter does not automatically accurately scale the image using min/maxing
+                such that a specific y-axis value needs to be given for accurate scaling
+
+    Returns: 
+        vmin-vmax pairs
+           
+    """
+    if(yval != None):
+        middle_y_axis = yval
+    else:
+        middle_y_axis = int(np.shape(obj_image[:,0])[0]/2)
+    
+    histogram = plt.hist(obj_image[middle_y_axis].flatten(), bins='auto')
+    plt.clf()
+    vmin = histogram[1].min()
+    vmax = histogram[1].max()
+
+    return (vmin, vmax)
+
 def plotter(obj_image, yval=None):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
@@ -131,7 +161,7 @@ def plotter(obj_image, yval=None):
 
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
 
-def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
+def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
     """
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
@@ -223,11 +253,11 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
-                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=0, vmax=100)
+                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(20)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
-            ax2.imshow(cutouts.T, vmin=0, vmax=100)
+            ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
             ax2.set_aspect(20)
         
@@ -257,11 +287,11 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
-                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=0, vmax=100)
+                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(40)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
-            ax2.imshow(cutouts.T, vmin=0, vmax=100)
+            ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
             ax2.set_aspect(40)
         return fitted_model, mean_trace_profile, npix_ret
