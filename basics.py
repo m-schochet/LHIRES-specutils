@@ -204,14 +204,12 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             
             mean_trace_profile: the weights of the trace for making spectra (Array)
             
-            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
+            xvals: the x-axis of this image (Array)
+
+            weighted_yaxis_values: the weighted y-axis used to make the images (Array)
 
         *with hot pixel cut outs* (4)
             bad_pixels: the hot pixel mask (MaskedArray)
-            
-            fitted_model: the trace of our object (Polynomial1D)
-            
-            mean_trace_profile: the weights of the trace for making spectra (Array)
     """
     # Instantiating everything
     image_array = np.array(obj_image)
@@ -264,7 +262,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
         
-        return bad_pixels, fitted_model, mean_trace_profile
+        return fitted_model, mean_trace_profile, weighted_yaxis_values, bad_pixels
     
     else:
         fitted_model = linfitter(model, xvals, weighted_yaxis_values)
@@ -297,4 +295,4 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
-        return fitted_model, mean_trace_profile
+        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values
