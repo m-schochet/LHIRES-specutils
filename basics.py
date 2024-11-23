@@ -192,12 +192,12 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
 
     # Determining trace
     if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
-        if(hot_pix_min_cut != None):
-            if(hot_pix_max_cut != None):
+        if (hot_pix_min_cut != None):
+            if (hot_pix_max_cut != None):
                 bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
             else:
                 bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
-        elif(hot_pix_max_cut != None):
+        elif (hot_pix_max_cut != None):
             bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)
         
         fitted_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
@@ -258,10 +258,10 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
                        extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=0, vmax=100)
-            ax1.set_aspect(20)
+            ax1.set_aspect(40)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
             ax2.imshow(cutouts.T, vmin=0, vmax=100)
             ax2.set_title("...to this")
-            ax2.set_aspect(20)
+            ax2.set_aspect(40)
         return fitted_model, mean_trace_profile, npix_ret
