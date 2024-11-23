@@ -191,8 +191,14 @@ def tracer(obj_image, min_y, max_y, model, npix, npix_bot=None, hot_pix_min_cut=
     weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,:])
 
     # Determining trace
-    if ((hot_pix_min_cut != None) & (hot_pix_max_cut != None)):
-        bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
+    if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
+        if(hot_pix_min_cut != None):
+            if(hot_pix_max_cut != None):
+                bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
+            else:
+                bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
+        elif(hot_pix_max_cut != None):
+            bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)
         
         fitted_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
         print(fitted_model)
