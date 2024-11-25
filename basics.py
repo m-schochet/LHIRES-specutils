@@ -21,9 +21,6 @@ plt.matplotlib.style.use('dark_background')  # Optional configuration: if run, t
 
 *** where path-to-fits-file should be replaced with the path on your machine to the image surrounded by quotations ***
 
-"""
-
-"""
 
 Fits Used
 
@@ -160,7 +157,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
     hot pixels present, feel free to rerun this function with the hot pixel inputs specified
         
-    Inputs:
+    Inputs (7 required, 12 including optional):
         obj_image: (np.ndarray) image to be traced (must be a fits file that has already been placed into a variable with fits.getdata)
         
         min_y: (int) what is the minimum y-axis value from where the weighted pixels should be judged
@@ -188,23 +185,24 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             
             *Note*
                 if these above optional parameters are given, the function needs to be called with four returned variables
-                (both the weighted y-axis values, fitted trace, mean weights, and the bad pixels mask)    
+                (both the weighted y-axis values, fit trace, mean weights, and the bad pixels mask)    
     
             npix_bot: (int) if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
     Returns (5, optional 6):
         *without hot pixel cut outs (5)*
-            fitted_model: the trace of our object (Polynomial1D)
+            fit_model: (astropy.models.Polynomial1D) the trace of our object
             
-            mean_trace_profile: the weights of the trace for making spectra (Array)
+            mean_trace_profile: (np.array) the weights of the trace for making spectra
             
-            xvals: the x-axis of this image (Array)
+            xvals: (np.array) the x-axis of this image
 
-            weighted_yaxis_values: the weighted y-axis used to make the images (Array)
+            weighted_yaxis_values: (np.array) the weighted y-axis used to make the images
 
-            npix_ret: pixels cut from below and above for use in spectra weighting (tuple)
+            npix_ret: (tuple) pixels cut from below and above for use in spectra weighting 
+            
         *with hot pixel cut outs (6)* 
-            bad_pixels: the hot pixel mask (MaskedArray)
+            bad_pixels: (np.ma.maskedarray) the hot pixel mask
     """
     # Instantiating everything
     image_array = np.array(obj_image)
@@ -226,14 +224,14 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
         elif (hot_pix_max_cut != None):
             bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)
         
-        fitted_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
-        print(fitted_model)
+        fit_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
+        print(fit_model)
         
         plt.plot(xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels], 'x')
-        plt.plot(xvals[~bad_pixels], fitted_model(xvals[~bad_pixels]))
+        plt.plot(xvals[~bad_pixels], fit_model(xvals[~bad_pixels]))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fitted_model(xvals[~bad_pixels])
+        trace = fit_model(xvals[~bad_pixels])
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                                     for yval, ii in zip(trace, xvals[~bad_pixels])])
@@ -257,17 +255,17 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
         
-        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
+        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
     
     else:
-        fitted_model = linfitter(model, xvals, weighted_yaxis_values)
-        print(fitted_model)
+        fit_model = linfitter(model, xvals, weighted_yaxis_values)
+        print(fit_model)
         
         plt.plot(xvals, weighted_yaxis_values, 'x')
-        plt.plot(xvals, fitted_model(xvals))
+        plt.plot(xvals, fit_model(xvals))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fitted_model(xvals)
+        trace = fit_model(xvals)
         if(npix_bot != None):
             cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                             for yval, ii in zip(trace, xvals)])
@@ -290,6 +288,27 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
-        return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
+        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
 
-def residuals(
+def residuals(model, xvals, yvals, bad_pixel_mask=None):
+    """
+    This function is meant to plot residuals from a certain wavelength trace
+        
+    Inputs (2 required, 3 if using a mask of bad pixels):
+        model: (astropy.models) the fit trace of our object 
+        
+        xvals: (np.array) the x-axis of this traced image
+
+        yvals: (np.array) (please use) weighted y-axis used to make the trace
+
+        bad_pixel_mask: (np.ma.maskedarray) the masks of bad pixels for the image
+        
+    Returns (5, optional 6):
+        nothing, this function simply plots residuals
+        
+    plt.figure(figsize=(8,4))
+    plt.plot(xvals[~bad_pixel_mask],
+          yvals[~bad_pixel_mask] - model(xvals[~bad_pixel_mask]), 'x')
+    plt.title("Residuals", fontsize=20)
+    plt.xlabel("x-axis", fontsize=10)
+    plt.ylabel("Residual (data-model)", fontsize=10)
