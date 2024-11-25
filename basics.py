@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 from astropy.io import fits
 from astropy.modeling.polynomial import Polynomial1D
 from astropy.modeling.models import Linear1D
 from astropy.modeling.fitting import LinearLSQFitter, LMLSQFitter
+import astropy.visualization.ZScaleInterval() as zscale
 
 
 """
@@ -119,15 +121,14 @@ def scales(obj_image, yval=None):
         vmin-vmax pairs
            
     """
+    zscaler = zscale()
     if(yval != None):
         middle_y_axis = yval
     else:
         middle_y_axis = int(np.shape(obj_image[:,0])[0]/2)
-    
-    histogram = plt.hist(obj_image[middle_y_axis].flatten(), bins='auto')
-    vmin = histogram[1].min()
-    vmax = histogram[1].max()
-    plt.close()
+    scaler = zscaler.get_limits(obj_image[middle_y_axis].flatten())
+    vmin = math.ceil(scaler[1])
+    vmax = int(scaler[0])
     return (vmin, vmax)
 
 def plotter(obj_image, yval=None):
