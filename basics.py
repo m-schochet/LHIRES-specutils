@@ -103,61 +103,37 @@ def image_reduction(object_image, list_flats, list_bias=None, list_dark=None):
         science_image = object_image
         return science_image
 
-def scales(obj_image, yval=None):
+def scales(obj_image):
     """
-    This function is meant to return the vmin-vmax values for a certain image (and for a specific y-axis value if needed)
+    This function is meant to return the vmin-vmax values with zscale for a certain image
     
-    Inputs (1, optional 2):
+    Inputs (1):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
-
-        Optional:
-            y_val: (int) yval to calculate minimum/maximum scaling values for the plot
-            
-            *Note*
-                This is for use if the plotter does not automatically accurately scale the image using min/maxing
-                such that a specific y-axis value needs to be given for accurate scaling
-
+    
     Returns (1): 
         vmin-vmax pairs
            
     """
     zscaler = zscale()
-    if(yval != None):
-        middle_y_axis = yval
-    else:
-        middle_y_axis = int(np.shape(obj_image[:,0])[0]/2)
-    scaler = zscaler.get_limits(obj_image[middle_y_axis].flatten())
-    vmin = math.ceil(scaler[1])
-    vmax = int(scaler[0])
+    scaler = zscaler.get_limits(obj_image)
+    vmax = math.ceil(scaler[1])
+    vmin = int(scaler[0])
     return (vmin, vmax)
 
-def plotter(obj_image, yval=None):
+def plotter(obj_image):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
     
-    Inputs (1, optional 2):
+    Inputs (1):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
-
-        Optional:
-            y_val: (int) yval to calculate minimum/maximum scaling values for the plot
-            
-            *Note*
-                This is for use if the plotter does not automatically accurately scale the image using min/maxing
-                such that a specific y-axis value needs to be given for accurate scaling
 
     Returns (1): 
         Nothing, this function is for plotting
            
     """
-    if(yval != None):
-        middle_y_axis = yval
-    else:
-        middle_y_axis = int(np.shape(obj_image[:,0])[0]/2)
-    
-    histogram = plt.hist(obj_image[middle_y_axis].flatten(), bins='auto')
-    plt.clf()
-    vmin = histogram[1].min()
-    vmax = histogram[1].max()
+    zscaling = scales(obj_image)
+    vmin = zscaling[0]
+    vmax = zscaling[1]
 
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
 
