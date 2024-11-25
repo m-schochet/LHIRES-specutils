@@ -5,7 +5,7 @@ from astropy.io import fits
 from astropy.modeling.polynomial import Polynomial1D
 from astropy.modeling.models import Linear1D
 from astropy.modeling.fitting import LinearLSQFitter, LMLSQFitter
-import astropy.visualization.ZScaleInterval as zscale
+from astropy.visualization import ZScaleInterval as zscale
 
 
 """
