@@ -305,7 +305,7 @@ def residuals(model, xvals, yvals, bad_pixel_mask=None):
         
     Returns (5, optional 6):
         nothing, this function simply plots residuals
-        
+    """   
     plt.figure(figsize=(8,4))
     plt.plot(xvals[~bad_pixel_mask],
           yvals[~bad_pixel_mask] - model(xvals[~bad_pixel_mask]), 'x')
