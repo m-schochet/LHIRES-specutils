@@ -120,13 +120,18 @@ def scales(obj_image):
     vmin = int(scaler[0])
     return (vmin, vmax)
 
-def plotter(obj_image):
+def plotter(obj_image, obj_name, obj_type="detector-direct", specification=None):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
     
-    Inputs (1):
+    Inputs (2, or up to 4):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
+        obj_name: (str) the name of the object (to be displayed on plot title)
+        
+        obj_type: (str) the type of image you are plotting. Options are: "detector-direct (default), wavelengths, frequencies
+
+        specification: (astropy.units) if plotting wavelengths or frequencies on the x-axis, specify the astropy.units of the x-axis
     Returns (1): 
         Nothing, this function is for plotting
            
@@ -134,8 +139,20 @@ def plotter(obj_image):
     zscaling = scales(obj_image)
     vmin = zscaling[0]
     vmax = zscaling[1]
-
+    plt.figure(figsize=(10,5))
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
+    plt.title(obj_name, fontsize=20)
+    if(obj_type="detector-direct"):
+        plt.xlabel("x-axis", fontsize=10)
+        plt.ylabel("y-axis", fontsize=10)
+    elif((obj_type="wavelengths") | (obj_type="frequencies")):
+        unit = str(specification.unit)
+        if(obj_type="frequencies"):
+            plt.xlabel("Frequency (" + unit + ")", fontsize=10)
+            plt.ylabel("Intensity", fontsize=10)
+        elif(obj_type="wavelengths"):
+            plt.xlabel("Wavelength (" + unit + ")", fontsize=10)
+            plt.ylabel("Intensity", fontsize=10)
 
 def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
@@ -274,3 +291,5 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
             ax2.set_title("...to this")
             ax2.set_aspect(aspect)
         return fitted_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
+
+def residuals(
