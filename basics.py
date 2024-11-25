@@ -139,15 +139,15 @@ def plotter(obj_image, obj_name, obj_type="detector-direct", specification=None)
     plt.figure(figsize=(10,5))
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
     plt.title(obj_name, fontsize=20)
-    if(obj_type="detector-direct"):
+    if(obj_type=="detector-direct"):
         plt.xlabel("x-axis", fontsize=10)
         plt.ylabel("y-axis", fontsize=10)
-    elif((obj_type="wavelengths") | (obj_type="frequencies")):
+    elif((obj_type=="wavelengths") | (obj_type=="frequencies")):
         unit = str(specification.unit)
-        if(obj_type="frequencies"):
+        if(obj_type=="frequencies"):
             plt.xlabel("Frequency (" + unit + ")", fontsize=10)
             plt.ylabel("Intensity", fontsize=10)
-        elif(obj_type="wavelengths"):
+        elif(obj_type=="wavelengths"):
             plt.xlabel("Wavelength (" + unit + ")", fontsize=10)
             plt.ylabel("Intensity", fontsize=10)
 
