@@ -49,13 +49,13 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
         spectra = np.array([np.average(image_array[int(yval)-npix_tup[0]:int(yval)+npix_tup[1], ii],
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals)])
-
-    if(plot_spectra==True):
-        fig, ax = plt.subplots()
-        spec = ax.plot(spectra)
-        pos = []
-        def onclick(event):
-            pos.append([event.xdata,event.ydata])
-        fig.canvas.mpl_connect('button_press_event', onclick)
-        fig.show()
     return spectra
+
+def point_finder(spectra, xaxis, mask):
+    fig, ax = plt.subplots()
+    spec = ax.plot(spectra)
+    pos = []
+    def onclick(event):
+         pos.append([event.xdata,event.ydata])
+    fig.canvas.mpl_connect('button_press_event', onclick)
+    fig.show()
