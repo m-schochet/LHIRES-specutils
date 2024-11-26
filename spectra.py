@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import astropy
-import mpldatacursor
+import mplcursors
 
 
 
@@ -56,7 +56,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
     if(plot_spectra==True):
         fig, ax1 = plt.subplots()
         fig = plt.figure(figsize=size)
-        ax1.plot(spectra)
-        mpldatacursor.datacursor(hover=True, bbox=dict(alpha=1, fc='w'))
+        spec = ax1.plot(spectra)
+        mplcursors.cursor(spec)
         plt.show()
     return spectra
