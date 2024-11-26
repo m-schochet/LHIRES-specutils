@@ -50,7 +50,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals)])
     if(plot_spectra==True):
-        fig = plt.figure(figsize=(10,6))
+        fig = plt.figure(figsize=size)
         ax1 = fig.add_subplot(111)
         ax1.plot(spectra)
         ax1.set_title("Spectra " +obj_name)
@@ -65,4 +65,5 @@ def point_finder(spectra, xaxis, mask):
     def onclick(event):
          pos.append([event.xdata,event.ydata])
     fig.canvas.mpl_connect('button_press_event', onclick)
+    fig.figsize=size
     fig.show()
