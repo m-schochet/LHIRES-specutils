@@ -138,7 +138,7 @@ def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct"
     zscaling = scales(obj_image)
     if(manual_vscales!=None):
         vmin = manual_vscales[0]
-        vmax = manual_scales[1]
+        vmax = manual_vscales[1]
     else:
         vmin = zscaling[0]
         vmax = zscaling[1]
