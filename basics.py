@@ -117,14 +117,16 @@ def scales(obj_image):
     vmin = int(scaler[0])
     return (vmin, vmax)
 
-def plotter(obj_image, obj_name, obj_type="detector-direct", specification=None):
+def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct", specification=None):
     """
     This function is meant to take an image and determine the optimal scaling to plot it
     
-    Inputs (2, or up to 4):
+    Inputs (2, or up to 5):
         obj_image: (np.ndarray) image to be plotted (must be a fits file that has already been placed into a variable with fits.getdata)
 
         obj_name: (str) the name of the object (to be displayed on plot title)
+
+        manual_vscales: (tuple) a tuple of manual vmin/vmax scalings for the plotter function
         
         obj_type: (str) the type of image you are plotting. Options are: "detector-direct (default), wavelengths, frequencies
 
@@ -134,8 +136,12 @@ def plotter(obj_image, obj_name, obj_type="detector-direct", specification=None)
            
     """
     zscaling = scales(obj_image)
-    vmin = zscaling[0]
-    vmax = zscaling[1]
+    if(manual_vscales!=None):
+        vmin = manual_vscales[0]
+        vmax = manual_scales[1]
+    else:
+        vmin = zscaling[0]
+        vmax = zscaling[1]
     plt.figure(figsize=(10,5))
     plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
     plt.title(obj_name, fontsize=20)
