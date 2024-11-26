@@ -57,29 +57,29 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
         ax1.plot(spectra)
         ax1.set_title("Spectra " +obj_name)
         
-    
     return spectra
 
-def point_finder(spectra, xaxis, mask):
+def point_finder(spectra, xaxis, mask, size=(8,4)):
      """
     This function is meant to help us display the spectra and be able to interact with the image to determine the location of lines (pixel values)
     
     ** Note that for this function to run, one needs to set the widget matplotlib backend. This requires an install of ipympl as well as pyqt. Without these 
     packages, the function will error**
-    Inputs (3 needed)
+    Inputs (3 needed, 4 possible)
         spectra: (np.ndaray) the spectra of the opject
         
         xaxis: (np.ndarray) the xaxis values of this spectra
         
         mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask (otherwise simply use None)
 
+        size: (tuple) variable to change the size of the plotted image
     Returns:
         Nothing, simply a plotter
         
 
     """
-    
-    fig, ax = plt.subplots()
+    fig = plt.figure(figsize=size)
+    ax = fig.add_subplot(111)
     spec = ax.plot(xaxis[~mask], spectra)
     pos = []
     def onclick(event):
