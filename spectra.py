@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import astropy
 
-def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup, size=(10, 6), plot_spectra=False, bad_pix_mask=None, obj_name=""):
+def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup:tuple, size=(10, 6):tuple, 
+    plot_spectra=False:bool, bad_pix_mask=None:np.ma.maskedarray, obj_name="":str):
+
     """
     This function is meant to help us create a spectra and check to make sure it looks alright. 
    
@@ -22,12 +24,12 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
 
         size: (tuple) use this to change the size of the plotted spectra (Default is 10,6)
         
-        plot_spectra: set to True if you want to see the spectra
+        plot_spectra: (boolean) set to True if you want to see the spectra
 
         obj_name: (string) insert the name of the object for a plot title herex
             
         Optional: 
-            bad_pix_mask: if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask
+            bad_pix_mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask
 
     Returns:
         spectra: (np.ndaray) the spectra of the opject
@@ -59,10 +61,27 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
     return spectra
 
 def point_finder(spectra, xaxis, mask):
+     """
+    This function is meant to help us display the spectra and be able to interact with the image to determine the location of lines (pixel values)
+    
+    ** Note that for this function to run, one needs to set the widget matplotlib backend. This requires an install of ipympl as well as pyqt. Without these 
+    packages, the function will error**
+    Inputs (3 needed)
+        spectra: (np.ndaray) the spectra of the opject
+        
+        xaxis: (np.ndarray) the xaxis values of this spectra
+        
+        mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask (otherwise simply use None)
+
+    Returns:
+        Nothing, simply a plotter
+        
+
+    """
+    
     fig, ax = plt.subplots()
     spec = ax.plot(xaxis[~mask], spectra)
     pos = []
     def onclick(event):
          pos.append([event.xdata,event.ydata])
     fig.canvas.mpl_connect('button_press_event', onclick)
-    fig.show()
