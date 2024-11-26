@@ -50,7 +50,6 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals)])
     if(plot_spectra==True):
-        fig, ax = plt.subplots()
         fig = plt.figure(figsize=(10,6))
         ax1 = fig.add_subplot(111)
         ax1.plot(spectra)
