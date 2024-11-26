@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import astropy
-import mplcursors
-
-
 
 def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup, size=(10, 6), plot_spectra=False, bad_pix_mask=None, obj_name=""):
     """
@@ -54,9 +51,11 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
                                 for yval, ii in zip(trace, xvals)])
 
     if(plot_spectra==True):
-        fig, ax1 = plt.subplots()
-        fig = plt.figure(figsize=size)
-        spec = ax1.plot(spectra)
-        mplcursors.cursor(spec)
-        plt.show()
+        fig, ax = plt.subplots()
+        spec = ax.plot(spectra)
+        pos = []
+        def onclick(event):
+            pos.append([event.xdata,event.ydata])
+        fig.canvas.mpl_connect('button_press_event', onclick)
+        fig.show()
     return spectra
