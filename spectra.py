@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import astropy
 
-def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup:tuple, size=(10, 6), 
+def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, npix_tup:tuple, size=(10, 6), 
     plot_spectra=False, bad_pix_mask=None, obj_name=""):
 
     """
