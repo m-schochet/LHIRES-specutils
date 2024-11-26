@@ -206,7 +206,6 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=
     """
     # Instantiating everything
     image_array = np.array(obj_image)
-    image_array = image_array - np.median(image_array)
     
     yaxis = np.repeat(np.arange(min_y, max_y)[:,None],
                       image_array.shape[1], axis=1)
