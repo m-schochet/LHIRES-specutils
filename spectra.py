@@ -53,7 +53,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
 
 def point_finder(spectra, xaxis, mask):
     fig, ax = plt.subplots()
-    spec = ax.plot(spectra)
+    spec = ax.plot(xaxis[~mask], spectra)
     pos = []
     def onclick(event):
          pos.append([event.xdata,event.ydata])
