@@ -156,7 +156,6 @@ def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct"
         elif(obj_type=="wavelengths"):
             ax.set_xlabel("Wavelength (" + unit + ")", fontsize=10)
             ax.set_ylabel("Intensity", fontsize=10)
-    fig.show()
 
 def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
