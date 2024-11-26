@@ -1,8 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import astropy
+import mpldatacursor
 
-def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup, plot_spectra=False, bad_pix_mask=None, obj_name=""):
+
+
+def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup, size=(10, 6), plot_spectra=False, bad_pix_mask=None, obj_name=""):
     """
     This function is meant to help us create a spectra and check to make sure it looks alright. 
    
@@ -11,7 +14,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
     downselect a smaller portion of the original spectrum **
 
     
-    Inputs:
+    Inputs (4 needed, 8 possible):
         obj_image: (np.ndarray) image to use for the spectra (must be a fits file that has already been placed into a variable with fits.getdata)
         
         fit_model: (astropy.modeling.models) this is a returned model trace, can be gotten from the basics.py/tracer function
@@ -19,7 +22,9 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
         mean_weights: (np.ndarray) this is the mean_trace_profile returned variable from basics.py/tracer, used to weight our spectra
         
         npix_tup: (tuple) use this to input the npix_ret tuple from basics.py/tracer so that we can cut out the spectra
-    
+
+        size: (tuple) use this to change the size of the plotted spectra (Default is 10,6)
+        
         plot_spectra: set to True if you want to see the spectra
 
         obj_name: (string) insert the name of the object for a plot title herex
@@ -48,11 +53,10 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals)])
 
-
     if(plot_spectra==True):
-        fig = plt.figure(figsize=(10,6))
-        ax1 = fig.add_subplot(111)
+        fig, ax = plt.subplots()
+        fig = plt.figure(figsize=size)
         ax1.plot(spectra)
-        ax1.set_title("Spectra " +obj_name)
-        
+        mpldatacursor.datacursor(hover=True, bbox=dict(alpha=1, fc='w'))
+        plt.show()
     return spectra
