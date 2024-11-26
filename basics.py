@@ -142,20 +142,21 @@ def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct"
     else:
         vmin = zscaling[0]
         vmax = zscaling[1]
-    plt.figure(figsize=(10,5))
-    plt.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
-    plt.title(obj_name, fontsize=20)
+    fig, ax = plt.subplots(figsize=(10,5))
+    ax.imshow(obj_image, norm='log', vmin=vmin, vmax=vmax)
+    ax.set_title(obj_name, fontsize=20)
     if(obj_type=="detector-direct"):
-        plt.xlabel("x-axis", fontsize=10)
-        plt.ylabel("y-axis", fontsize=10)
+        ax.set_xlabel("x-axis", fontsize=10)
+        ax.set_ylabel("y-axis", fontsize=10)
     elif((obj_type=="wavelengths") | (obj_type=="frequencies")):
         unit = str(specification.unit)
         if(obj_type=="frequencies"):
-            plt.xlabel("Frequency (" + unit + ")", fontsize=10)
-            plt.ylabel("Intensity", fontsize=10)
+            ax.set_xlabel("Frequency (" + unit + ")", fontsize=10)
+            ax.set_ylabel("Intensity", fontsize=10)
         elif(obj_type=="wavelengths"):
-            plt.xlabel("Wavelength (" + unit + ")", fontsize=10)
-            plt.ylabel("Intensity", fontsize=10)
+            ax.set_xlabel("Wavelength (" + unit + ")", fontsize=10)
+            ax.set_ylabel("Intensity", fontsize=10)
+    fig.show()
 
 def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
