@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import astropy
 
-def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup:tuple, size=(10, 6), 
+def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.Model, mean_weights:np.ndarray, npix_tup:tuple, size=(10, 6), 
     plot_spectra=False, bad_pix_mask=None, obj_name=""):
 
     """
@@ -32,25 +32,26 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
             bad_pix_mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask
 
     Returns:
-        spectra: (np.ndaray) the spectra of the opject
+        spectra: (np.ndarray) the spectra of the opject
         
     """
     
     image_array = np.array(obj_image)
     image_array = image_array - np.median(image_array)
     xvals = np.arange(image_array.shape[1])
-    
-    if(bad_pix_mask.any() != None):
+
+    if bad_pix_mask is not None and bad_pix_mask.any():
         trace = fit_model(xvals[~bad_pix_mask])
         spectra = np.array([np.average(image_array[int(yval)-npix_tup[0]:int(yval)+npix_tup[1], ii],
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals[~bad_pix_mask])])
-
     else:
         trace = fit_model(xvals)
         spectra = np.array([np.average(image_array[int(yval)-npix_tup[0]:int(yval)+npix_tup[1], ii],
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals)])
+
+        
     if(plot_spectra==True):
         fig = plt.figure(figsize=size)
         ax1 = fig.add_subplot(111)
@@ -60,7 +61,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, me
     return spectra
 
 def point_finder(spectra, xaxis, mask, size=(8,4)):
-     """
+    """
     This function is meant to help us display the spectra and be able to interact with the image to determine the location of lines (pixel values)
     
     ** Note that for this function to run, one needs to set the widget matplotlib backend. This requires an install of ipympl as well as pyqt. Without these 
