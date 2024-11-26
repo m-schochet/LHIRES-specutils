@@ -65,5 +65,4 @@ def point_finder(spectra, xaxis, mask):
     def onclick(event):
          pos.append([event.xdata,event.ydata])
     fig.canvas.mpl_connect('button_press_event', onclick)
-    fig.figsize=size
     fig.show()
