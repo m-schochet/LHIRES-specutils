@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import astropy
 
-def spectra_producer(obj_image, fit_model, mean_weights, npix_tup, plot_spectra=False, bad_pix_mask=None, obj_name=""):
+def spectra_producer(obj_image:np.ndarray, fit_model:astropy.modeling.models, mean_weights:np.ndarray, npix_tup, plot_spectra=False, bad_pix_mask=None, obj_name=""):
     """
     This function is meant to help us create a spectra and check to make sure it looks alright. 
    
