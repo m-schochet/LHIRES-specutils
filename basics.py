@@ -220,10 +220,19 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
     xvals = np.arange(image_array.shape[1])
     
     if((xlims!=None) & (type(xlims)==tuple)):
-            xmin = xlims[0]
-            xmax = xlims[1]
+        xmin = xlims[0]
+        xmax = xlims[1]
+        xvals = xvals[xmin:xmax]
+        if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
+            if (hot_pix_min_cut != None):
+                if (hot_pix_max_cut != None):
+                    bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
+                else:
+                    bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
+            elif (hot_pix_max_cut != None):
+                bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)     
             bad_pixels = bad_pixels[xmin:xmax]
-            xvals = xvals[xmin:xmax]
+        
         
     weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,xvals[0]:xvals[len(xvals)-1])
 
