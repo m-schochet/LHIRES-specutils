@@ -218,7 +218,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
     yaxis = np.repeat(np.arange(min_y, max_y)[:,None],
                       image_array.shape[1], axis=1)
     xvals = np.arange(image_array.shape[1])
-   """ 
+   
     if((xlims!=None) & (type(xlims)==tuple)):
         xmin = xlims[0]
         xmax = xlims[1]
@@ -232,35 +232,30 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             elif (hot_pix_max_cut != None):
                 bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)     
             bad_pixels = bad_pixels[xmin:xmax]
+    else:
+        xmin = xvals[0]
+        xmax = xvals[len(xvals)-1]+1
         
-    """  
-    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,xvals[0]:xvals[len(xvals)-1])
-    print(np.shape(weighted_yaxis_values))
+     
+    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,:])
+    
     # Determining trace
     if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
-        if (hot_pix_min_cut != None):
-            if (hot_pix_max_cut != None):
-                bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
-            else:
-                bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
-        elif (hot_pix_max_cut != None):
-            bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)
-   
-        fit_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
+        fit_model = linfitter(model, xvals[~bad_pixels][xmin:xmax], weighted_yaxis_values[~bad_pixels][xmin:xmax])
         print(fit_model)
         
-        plt.plot(xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels], 'x')
-        plt.plot(xvals[~bad_pixels], fit_model(xvals[~bad_pixels]))
+        plt.plot(xvals[~bad_pixels][xmin:xmax], weighted_yaxis_values[~bad_pixels][xmin:xmax], 'x')
+        plt.plot(xvals[~bad_pixels][xmin:xmax], fit_model(xvals[~bad_pixels][xmin:xmax]))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fit_model(xvals[~bad_pixels])
+        trace = fit_model(xvals[~bad_pixels][xmin:xmax])
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
-                                    for yval, ii in zip(trace, xvals[~bad_pixels])])
+                                    for yval, ii in zip(trace, xvals[~bad_pixels][xmin:xmax])])
             npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
-                                for yval, ii in zip(trace, xvals[~bad_pixels])])
+                                for yval, ii in zip(trace, xvals[~bad_pixels][xmin:xmax])])
             npix_ret = (npix, npix)
         mean_trace_profile = cutouts.mean(axis=0)
         
@@ -269,7 +264,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
-                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
+                       extent=[xmin,xmax,int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
@@ -280,21 +275,21 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
         return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
     
     else:
-        fit_model = linfitter(model, xvals, weighted_yaxis_values)
+        fit_model = linfitter(model, xvals[xmin:xmax], weighted_yaxis_values[xmin:xmax])
         print(fit_model)
         
-        plt.plot(xvals, weighted_yaxis_values, 'x')
-        plt.plot(xvals, fit_model(xvals))
+        plt.plot(xvals[xmin:xmax], weighted_yaxis_values[xmin:xmax], 'x')
+        plt.plot(xvals[xmin:xmax], fit_model(xvals[xmin:xmax]))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fit_model(xvals)
+        trace = fit_model(xvals[xmin:xmax])
         if(npix_bot != None):
             cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
-                            for yval, ii in zip(trace, xvals)])
+                            for yval, ii in zip(trace, xvals[xmin:xmax])])
             npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
-                                for yval, ii in zip(trace, xvals)])
+                                for yval, ii in zip(trace, xvals[xmin:xmax])])
             npix_ret = (npix, npix)
         mean_trace_profile = cutouts.mean(axis=0)
 
@@ -303,7 +298,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
             ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
-                       extent=[0,image_array.shape[1],int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
+                       extent=[xmin,xmax,int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
             ax2 = plt.subplot(1,2,2)
