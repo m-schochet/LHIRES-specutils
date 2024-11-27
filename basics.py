@@ -157,7 +157,7 @@ def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct"
             ax.set_xlabel("Wavelength (" + unit + ")", fontsize=10)
             ax.set_ylabel("Intensity", fontsize=10)
 
-def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, xlims=None, aspect=0, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
+def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=None, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
     """
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
@@ -181,6 +181,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, xlims=None, aspect=
         vmax: (int) vmax scaling on the images for plot_cutouts
 
         aspect: (int) how scaled should the cutout plots be
+
+        xlims: (tuple) xlimits if needed to make a trace of only a portion of the x-axis (default to 0, 4144)
         
         plot_cutouts: (boolean) set to True if you want to see the effect of getting the weights
         
@@ -217,7 +219,13 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, xlims=None, aspect=
                       image_array.shape[1], axis=1)
     xvals = np.arange(image_array.shape[1])
     
-    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,:])
+    if((xlims!=None) & (type(xlims)==tuple)):
+            xmin = xlims[0]
+            xmax = xlims[1]
+            bad_pixels = bad_pixels[xmin:xmax]
+            xvals = xvals[xmin:xmax]
+        
+    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,np.min(xvals):np.max(xvals)])
 
     # Determining trace
     if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
@@ -228,13 +236,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, xlims=None, aspect=
                 bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
         elif (hot_pix_max_cut != None):
             bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)
-
-        if((xlims!=None) & (type(xlims)==tuple)):
-            xmin = xlims[0]
-            xmax = xlims[1]
-            bad_pixels = bad_pixels[xmin:xmax]
-            xvals = xvals[xmin:xmax]
-            
+   
         fit_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
         print(fit_model)
         
@@ -269,11 +271,6 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, xlims=None, aspect=
         return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
     
     else:
-        if((xlims!=None) & (type(xlims)==tuple)):
-            xmin = xlims[0]
-            xmax = xlims[1]
-            xvals = xvals[xmin:xmax]
-            
         fit_model = linfitter(model, xvals, weighted_yaxis_values)
         print(fit_model)
         
