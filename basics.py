@@ -225,7 +225,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             bad_pixels = bad_pixels[xmin:xmax]
             xvals = xvals[xmin:xmax]
         
-    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,np.min(xvals):np.max(xvals)])
+    weighted_yaxis_values = np.average(yaxis, axis=0, weights=image_array[min_y:max_y,xvals[0]:xvals[len(xvals)-1])
 
     # Determining trace
     if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
