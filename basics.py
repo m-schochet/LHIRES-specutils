@@ -250,6 +250,15 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
     
     # Determining trace
     if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
+        if ((hot_pix_min_cut != None) | (hot_pix_max_cut != None)):
+            if (hot_pix_min_cut != None):
+                if (hot_pix_max_cut != None):
+                    bad_pixels = (weighted_yaxis_values > hot_pix_max_cut) | (weighted_yaxis_values < hot_pix_min_cut)
+                else:
+                    bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
+            elif (hot_pix_max_cut != None):
+                bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)     
+            bad_pixels = bad_pixels
         fit_model = linfitter(model, xvals[~bad_pixels], weighted_yaxis_values[~bad_pixels])
         print(fit_model)
         
