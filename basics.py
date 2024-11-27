@@ -251,7 +251,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
         trace = fit_model(xvals[~bad_pixels])
         if(npix_bot != None):
             cutouts = np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
-                                    for yval, ii in zip(trace, xvals[~bad_pixels][)])
+                                    for yval, ii in zip(trace, xvals[~bad_pixels])])
             npix_ret = (npix_bot, npix)
         else:
             cutouts = np.array([image_array[int(yval)-npix:int(yval)+npix, ii]
