@@ -56,7 +56,6 @@ def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, n
         fig = plt.figure(figsize=size)
         ax1 = fig.add_subplot(111)
         ax1.plot(xvals, spectra)
-        ax.invert_xaxis()
         ax1.set_xticks(np.arange(xlims[0], xlims[1], step=400))
         ax1.set_title("Spectra " +obj_name)
         
