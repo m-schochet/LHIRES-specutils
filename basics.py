@@ -263,7 +263,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
         if(plot_cutouts==True):
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
-            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
+            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),xmin:xmax], 
                        extent=[xmin,xmax,int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
@@ -297,7 +297,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
         if(plot_cutouts==True):
             fig = plt.figure(figsize=(12,8))
             ax1 = plt.subplot(1,2,1)
-            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),:], 
+            ax1.imshow(image_array[int((trace-npix)[0]):int((trace+npix)[0]),xmin:xmax], 
                        extent=[xmin,xmax,int((trace-npix)[0]),int((trace+npix)[0])],vmin=vmin, vmax=vmax)
             ax1.set_aspect(aspect)
             ax1.set_title("We go from this...")
