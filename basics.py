@@ -157,7 +157,7 @@ def plotter(obj_image, obj_name, manual_vscales=None, obj_type="detector-direct"
             ax.set_xlabel("Wavelength (" + unit + ")", fontsize=10)
             ax.set_ylabel("Intensity", fontsize=10)
 
-def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=None, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
+def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect2=None, xlims=None, npix_bot=None, hot_pix_min_cut=None, hot_pix_max_cut=None, plot_cutouts=False):
      
     """
     This function is meant to help us determine the trace of our object. After running this function, the trace is plotted, and so if there are
@@ -180,23 +180,30 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
 
         vmax: (int) vmax scaling on the images for plot_cutouts
 
-        aspect: (int) how scaled should the cutout plots be
-
-        xlims: (tuple) xlimits if needed to make a trace of only a portion of the x-axis (default to 0, 4144)
+        Optionals:
         
         plot_cutouts: (boolean) set to True if you want to see the effect of getting the weights
         
-        Optional: 
-            hot_pix_min_cut: (int) if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
+        
+        Additional: 
+        IF SET plot_cutouts==True:
             
-            hot_pix_max_cut: (int) if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
+            aspect: (int) how scaled should the cutout plots be
             
-            *Note*
-                if these above optional parameters are given, the function needs to be called with four returned variables
-                (both the weighted y-axis values, fit trace, mean weights, and the bad pixels mask)    
-    
-            npix_bot: (int) if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
+            aspect2: (int) if there is an xlims cutout, it may be necessary for separate aspects to display the images correctly
+            
+        npix_bot: (int) if the image needs different cuts of pixels on the top and bottom, use this to indicate the number of pixels to be cut on the bottom
 
+        xlims: (tuple) xlimits if needed to make a trace of only a portion of the x-axis (default to 0, 4144)
+        
+        hot_pix_min_cut: (int) if the image has hot pixels, use this to select where those should be cut off (below on y-axis)
+            
+        hot_pix_max_cut: (int) if the image has hot pixels, use this to select where those should be cut off (above on y-axis)
+        *Note*
+            if these above optional parameters are given, the function needs to be called with four returned variables
+            (both the weighted y-axis values, fit trace, mean weights, and the bad pixels mask)    
+    
+        
     Returns (5, optional 6):
         *without hot pixel cut outs (5)*
             fit_model: (astropy.models.Polynomial1D) the trace of our object
@@ -270,7 +277,10 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             ax2 = plt.subplot(1,2,2)
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
-            ax2.set_aspect(aspect)
+            if((xmin!=0) | (xmax!=len(np.arange(image_array.shape[1])))):
+                ax2.set_aspect(aspect2)
+            else:
+                ax2.set_aspect(aspect)
         
         return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
     
@@ -304,7 +314,10 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=0, xlims=Non
             ax2 = plt.subplot(1,2,2)
             ax2.imshow(cutouts.T, vmin=vmin, vmax=vmax)
             ax2.set_title("...to this")
-            ax2.set_aspect(aspect)
+            if((xmin!=0) | (xmax!=len(np.arange(image_array.shape[1])))):
+                ax2.set_aspect(aspect2)
+            else:
+                ax2.set_aspect(aspect)
         return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
 
 def residuals(model, xvals, yvals, bad_pixel_mask=None):
