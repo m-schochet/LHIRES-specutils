@@ -37,7 +37,6 @@ def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, n
     """
     
     image_array = np.array(obj_image)
-    image_array = image_array - np.median(image_array)
     xvals = np.arange(image_array.shape[1])
     xvals=xvals[xlims[0]:xlims[1]]
         
