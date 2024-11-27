@@ -42,8 +42,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, n
     xvals=xvals[xlims[0]:xlims[1]]
         
     if bad_pix_mask is not None and bad_pix_mask.any():
-        bad_pix_mask = bad_pix_mask[xlims[0]:xlims[1]]
-        trace = fit_model(xvals)
+        trace = fit_model(xvals[~bad_pix_mask])
         spectra = np.array([np.average(image_array[int(yval)-npix_tup[0]:int(yval)+npix_tup[1], ii],
                             weights = mean_weights)
                                 for yval, ii in zip(trace, xvals[~bad_pix_mask])])
