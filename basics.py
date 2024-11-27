@@ -292,7 +292,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
         plt.plot(xvals, fit_model(xvals))
         plt.title("Traced spectra on weighted y-values")
 
-        trace = fit_model(xvals[xmin:xmax])
+        trace = fit_model(xvals)
         if(npix_bot != None):
             cutouts =  np.array([image_array[int(yval)-npix_bot:int(yval)+npix, ii]
                             for yval, ii in zip(trace, xvals)])
