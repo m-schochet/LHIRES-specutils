@@ -240,7 +240,7 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
                     bad_pixels = (weighted_yaxis_values < hot_pix_min_cut)
             elif (hot_pix_max_cut != None):
                 bad_pixels = (weighted_yaxis_values > hot_pix_max_cut)     
-            bad_pixels = bad_pixels[xmin:xmax]
+            bad_pixels = bad_pixels
     else:
         xmin = xvals[0]
         xmax = xvals[len(xvals)-1]+1
