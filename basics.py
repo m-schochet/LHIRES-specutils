@@ -215,6 +215,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
             weighted_yaxis_values: (np.array) the weighted y-axis used to make the images
 
             npix_ret: (tuple) pixels cut from below and above for use in spectra weighting 
+
+            xlims: (tuple) the xlims, either unedited or referencing those passed to the function
             
         *with hot pixel cut outs (6)* 
             bad_pixels: (np.ma.maskedarray) the hot pixel mask
@@ -281,8 +283,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
                 ax2.set_aspect(aspect2)
             else:
                 ax2.set_aspect(aspect)
-        
-        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, bad_pixels
+        xlims=(xmin, xmax)
+        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, xlims, bad_pixels
     
     else:
         fit_model = linfitter(model, xvals, weighted_yaxis_values)
@@ -318,7 +320,8 @@ def tracer(obj_image, min_y, max_y, model, npix, vmin, vmax, aspect=None, aspect
                 ax2.set_aspect(aspect2)
             else:
                 ax2.set_aspect(aspect)
-        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret
+        xlims=(xmin, xmax)
+        return fit_model, mean_trace_profile, xvals, weighted_yaxis_values, npix_ret, xlims
 
 def residuals(model, xvals, yvals, bad_pixel_mask=None):
     """
