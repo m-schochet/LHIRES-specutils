@@ -161,15 +161,15 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     
     ar_pixel_vals = fit_model.inverse(ar_keep_final)
     
-    xvals_ar_guess = np.concatenate([guess_pixels, ne_pixel_vals, argon_pixels, ar_pixel_vals])
-    waves_ar_guess = np.concatenate([guess_wl, ne_keep_final, argon_wls, ar_keep_final])
+    xvals_ar_guess = np.concatenate([ne_pixel_vals, ar_pixel_vals])
+    waves_ar_guess = np.concatenate([ne_keep_final, ar_keep_final])
       
     fit_model_with_argon_neon = linfitter(model=wlmodel,
                                 x=xvals_ar_guess,
                                 y=waves_ar_guess)
     wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
     print("Original Fit\n" + str(fit_model) + "\n")
-    print("Fit Using NIST (+Argon) as Well\n" + str(fit_model_with_argon_neon) + "\n")
+    print("Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
     
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14,14))
     ax1.plot(initial_wl_soln, spectra)
