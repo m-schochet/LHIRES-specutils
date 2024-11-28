@@ -17,7 +17,7 @@ def initial_wl(calibration_spectra, xlims, bad_pixel_mask, guess_pixels, guess_w
   Inputs (6, 7 if needed):
         calibration_spectra: (np.ndarray) the spectra of a calibration lamp (assumed that it was made using spectra.spectra_producer)
         
-        xlims: (tuple) a set of xmin/xmax values to create an xaxis with
+        xlims: (tuple) a set of xmin/xmax values to create an x-axis with
         
         bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
         
@@ -67,7 +67,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
   Inputs (7, 8 if needed):
         spectra: (np.ndarray) the spectra of a calibration lamp (assumed that it was the same used in using wavelengths.intial_wl
         
-        xlims: (tuple) a set of xmin/xmax values to create an xaxis with
+        xlims: (tuple) a set of xmin/xmax values to create an x-axis with
         
         bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
         
