@@ -83,57 +83,57 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
         fit_model_with_true_neon: corrected model which uses the NIST lists
         
   """
-    xaxis = np.arange(xlims[0], xlims[1], step=1)
+  xaxis = np.arange(xlims[0], xlims[1], step=1)
 
-    minwave = initial_wl_soln.min()
-    maxwave = initial_wl_soln.max()
-    neon_lines = Nist.query(minwav=minwave,
-                            maxwav=maxwave,
-                            wavelength_type='vac+air',
-                            linename='Ne I')
-    ne_wl_only_good = neon_lines['Observed']
-    ne_rel_only_good = np.array([float(x) for x in neon_lines['Rel.']])
+  minwave = initial_wl_soln.min()
+  maxwave = initial_wl_soln.max()
+  neon_lines = Nist.query(minwav=minwave,
+                          maxwav=maxwave,
+                          wavelength_type='vac+air',
+                          linename='Ne I')
+  ne_wl_only_good = neon_lines['Observed']
+  ne_rel_only_good = np.array([float(x) for x in neon_lines['Rel.']])
     
-    wavelengths = np.array(ne_wl_only_good)
-    df = pd.DataFrame(wavelengths)
+  wavelengths = np.array(ne_wl_only_good)
+  df = pd.DataFrame(wavelengths)
     
-    used_for_guesses = []
+  used_for_guesses = []
     
-    for i in range(len(guess_wl)):
-        checker = guess_wl[i]
-        checked = np.abs((df - checker))
-        val = checked.loc[checked[0] == np.min(checked)].index[0]
-        used_for_guesses.append(val)
+  for i in range(len(guess_wl)):
+      checker = guess_wl[i]
+      checked = np.abs((df - checker))
+      val = checked.loc[checked[0] == np.min(checked)].index[0]
+      used_for_guesses.append(val)
         
-    ne_keep_final = ne_wl_only_good[used_for_guesses]
-    ne_rel_only_good = ne_rel_only_good[used_for_guesses]
-    ne_rel_intens = (ne_rel_only_good / ne_rel_only_good.max() * spectra.max())
+  ne_keep_final = ne_wl_only_good[used_for_guesses]
+  ne_rel_only_good = ne_rel_only_good[used_for_guesses]
+  ne_rel_intens = (ne_rel_only_good / ne_rel_only_good.max() * spectra.max())
 
-    ne_pixel_vals = fit_model.inverse(ne_keep_final)
+  ne_pixel_vals = fit_model.inverse(ne_keep_final)
 
-    xvals_ne_guess = np.concatenate([guess_pixels,
-                                   ne_pixel_vals])
-    waves_ne_guess = np.concatenate([guess_wl, ne_keep_final])
+  xvals_ne_guess = np.concatenate([guess_pixels,
+                                  ne_pixel_vals])
+  waves_ne_guess = np.concatenate([guess_wl, ne_keep_final])
     
-    fit_model_with_true_neon = linfitter(model=wlmodel,
-                                x=xvals_ne_guess,
-                                y=waves_ne_guess)
-    wavelength_model = fit_model_with_true_neon(xaxis[~bad_pixel_mask]) * u.AA
+  fit_model_with_true_neon = linfitter(model=wlmodel,
+                              x=xvals_ne_guess,
+                              y=waves_ne_guess)
+  wavelength_model = fit_model_with_true_neon(xaxis[~bad_pixel_mask]) * u.AA
 
-    print("Original Fit\n" + str(fit_model) + "\n")
-    print("Fit Using NIST as Well\n" + str(fit_model_with_true_neon) + "\n")
+  print("Original Fit\n" + str(fit_model) + "\n")
+  print("Fit Using NIST as Well\n" + str(fit_model_with_true_neon) + "\n")
     
-    fig, (ax1, ax2) = pl.subplots(2, 1, figsize=(14,14))
-    ax1.plot(initial_wl_soln, spectra)
-    ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
-    ax1.set_ylabel("Intensity")
-    ax1.set_xlabel("Wavelength$\AA$")
+  fig, (ax1, ax2) = pl.subplots(2, 1, figsize=(14,14))
+  ax1.plot(initial_wl_soln, spectra)
+  ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
+  ax1.set_ylabel("Intensity")
+  ax1.set_xlabel("Wavelength$\AA$")
     
-    ax2.plot(wavelength_model, spectra)
-    ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
-    for wl in ne_keep_final:
-        pl.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
-    ax2.set_ylim(np.min(spectra), np.max(spectra));
-    ax2.set_xlabel("Air Wavelength [Angstroms]");
-    ax2.set_title("Calibration Neon Lamp")
-    return fit_model_with_true_neon
+  ax2.plot(wavelength_model, spectra)
+  ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
+  for wl in ne_keep_final:
+      pl.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
+  ax2.set_ylim(np.min(spectra), np.max(spectra));
+  ax2.set_xlabel("Air Wavelength [Angstroms]");
+  ax2.set_title("Calibration Neon Lamp")
+  return fit_model_with_true_neon
