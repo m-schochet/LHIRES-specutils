@@ -130,7 +130,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
   fit_model_with_true_neon = linfitter(model=wlmodel,
                               x=xvals_ne_guess,
                               y=waves_ne_guess)
-  wavelength_model = fit_model_with_true_neon(xaxis[~bad_pixel_mask]) * u.AA
+  wavelength_model1 = fit_model_with_true_neon(xaxis[~bad_pixel_mask]) * u.AA
 
   if(argon==True):
     argon_lines = Nist.query(minwav=minwave,
@@ -160,13 +160,13 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     
     ar_pixel_vals = np.asarray(fit_model.inverse(ar_keep_final)).tolist()
     
-    xvals_ar_guess = np.concatenate([guess_pixels, ne_pixel_vals, argon_pixels,  ar_pixel_vals])
+    xvals_ar_guess = np.concatenate([guess_pixels, ne_pixel_vals, argon_pixels, ar_pixel_vals])
     waves_ar_guess = np.concatenate([guess_wl, ne_keep_final, argon_wls, ar_keep_final])
       
     fit_model_with_argon_neon = linfitter(model=wlmodel,
                                 x=xvals_ar_guess,
                                 y=waves_ar_guess)
-    wavelength_model = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
+    wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
     print("Original Fit\n" + str(fit_model) + "\n")
     print("Fit Using NIST (+Argon) as Well\n" + str(fit_model_with_argon_neon) + "\n")
     
@@ -176,8 +176,9 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ax1.plot(ar_keep_final, ar_rel_intens*intensity_scaling, '+', label="Argon")
     ax1.set_ylabel("Intensity")
     ax1.set_xlabel("Wavelength ($\AA$)")
+    ax1.legend()
       
-    ax2.plot(wavelength_model, spectra)
+    ax2.plot(wavelength_model2, spectra)
     ax2.vlines(ar_keep_final, np.min(spectra), np.max(spectra), 'orange', alpha=0.25, linestyle='--', label="Argon")
     ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.25, linestyle='--', label="Neon")
     for wl in ne_keep_final:
@@ -188,6 +189,8 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ax2.set_ylim(np.min(spectra), np.max(spectra));
     ax2.set_xlabel("Wavelength ($\AA$)");
     ax2.set_title("Calibration Neon Lamp")
+    ax2.legend()
+    
     return fit_model_with_argon_neon
   else:
     print("Original Fit\n" + str(fit_model) + "\n")
@@ -198,12 +201,14 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
     ax1.set_ylabel("Intensity")
     ax1.set_xlabel("Wavelength ($\AA$)")
+    ax1.legend()
       
-    ax2.plot(wavelength_model, spectra)
+    ax2.plot(wavelength_model1, spectra)
     ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
     for wl in ne_keep_final:
         plt.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
     ax2.set_ylim(np.min(spectra), np.max(spectra));
     ax2.set_xlabel("Wavelength ($\AA$)");
     ax2.set_title("Calibration Neon Lamp")
+    ax2.legend()
     return fit_model_with_true_neon
