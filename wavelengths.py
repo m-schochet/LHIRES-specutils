@@ -100,7 +100,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
                           maxwav=maxwave,
                           wavelength_type='vac+air',
                           linename='Ne I')
-  a = np.array([(True if "*" in val else False) for val in neon_lines['Rel.'].value])
+  a = np.array([(True if "*" in str(val) else False) for val in neon_lines['Rel.'].value])
   ne_keep = (neon_lines['Rel.'] != "*") & (~a)
 
   ne_wl_only_good = neon_lines['Observed'][ne_keep]
@@ -137,7 +137,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
                             maxwav=maxwave,
                             wavelength_type='vac+air',
                             linename='Ar I')
-    b = np.array([(True if "*" in val else False) for val in argon_lines['Rel.'].value])
+    b = np.array([(True if "*" in str(val) else False) for val in argon_lines['Rel.'].value])
     ar_keep = (argon_lines['Rel.'] != "*") &  (~argon_lines['Rel.'].mask) & (~b)
     ar_wl_only_good = argon_lines['Observed'][ar_keep]
     ar_rel_only_good = np.array([float(x) for x in argon_lines['Rel.'][ar_keep]])
