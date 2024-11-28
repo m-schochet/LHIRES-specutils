@@ -100,8 +100,9 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
                           maxwav=maxwave,
                           wavelength_type='vac+air',
                           linename='Ne I')
-  ne_wl_only_good = neon_lines['Observed']
-  ne_rel_only_good = np.array([float(x) for x in neon_lines['Rel.']])
+  ne_keep = (argon_lines['Rel.'] != "*")
+  ne_wl_only_good = neon_lines['Observed'][ne_keep]
+  ne_rel_only_good = np.array([float(x) for x in neon_lines['Rel.'][ne_keep]])
     
   wavelengths = np.array(ne_wl_only_good)
   df = pd.DataFrame(wavelengths)
