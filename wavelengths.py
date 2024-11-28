@@ -202,7 +202,6 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
     ax1.set_ylabel("Intensity")
     ax1.set_xlabel("Wavelength ($\AA$)")
-    ax1.legend()
       
     ax2.plot(wavelength_model1, spectra)
     ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
@@ -211,5 +210,4 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ax2.set_ylim(np.min(spectra), np.max(spectra));
     ax2.set_xlabel("Wavelength ($\AA$)");
     ax2.set_title("Calibration Neon Lamp")
-    ax2.legend()
     return fit_model_with_true_neon
