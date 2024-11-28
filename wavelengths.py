@@ -160,7 +160,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     
     ar_pixel_vals = np.asarray(fit_model.inverse(ar_keep_final)).tolist()
     
-    xvals_ar_guess = np.concatenate([guesspix, ne_pixel_vals, ar_pixel_vals])
+    xvals_ar_guess = np.concatenate([guess_pixels, ne_pixel_vals, ar_pixel_vals])
     waves_ar_guess = np.concatenate([guess_wl, ne_keep_final, ar_keep_final])
       
     fit_model_with_argon_neon = linfitter(model=wlmodel,
