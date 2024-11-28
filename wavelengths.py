@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from astroquery.nist import Nist
 from astropy.modeling.models import Linear1D
 from astropy.modeling.fitting import LinearLSQFitter
