@@ -150,7 +150,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     for i in range(len(argon_wls)):
         checker2 = argon_wls[i]
         checked2 = np.abs((df2 - checker2))
-        val2 = checked.loc[checked2[0] == np.min(checked2)].index[0]
+        val2 = checked2.loc[checked2[0] == np.min(checked2)].index[0]
         used_for_guesses2.append(val2)
     
     ar_keep_final = np.asarray(ar_wl_only_good[used_for_guesses2]).tolist()
