@@ -128,13 +128,13 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
   ax1.plot(initial_wl_soln, spectra)
   ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
   ax1.set_ylabel("Intensity")
-  ax1.set_xlabel("Wavelength$\AA$")
+  ax1.set_xlabel("Wavelength ($\AA$)")
     
   ax2.plot(wavelength_model, spectra)
   ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
   for wl in ne_keep_final:
       plt.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
   ax2.set_ylim(np.min(spectra), np.max(spectra));
-  ax2.set_xlabel("Air Wavelength [Angstroms]");
+  ax2.set_xlabel("Wavelength ($\AA$)");
   ax2.set_title("Calibration Neon Lamp")
   return fit_model_with_true_neon
