@@ -158,7 +158,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     ar_rel_only_good = ar_rel_only_good[used_for_guesses2]
     ar_rel_intens = (ar_rel_only_good / ar_rel_only_good.max() * spectra.max())
     
-    ar_pixel_vals = np.asarray(fit_model_1303.inverse(ar_keep_final)).tolist()
+    ar_pixel_vals = np.asarray(fit_model.inverse(ar_keep_final)).tolist()
     
     xvals_ar_guess = np.concatenate([guesspix, ne_pixel_vals, ar_pixel_vals])
     waves_ar_guess = np.concatenate([guess_wl, ne_keep_final, ar_keep_final])
@@ -166,7 +166,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
     fit_model_with_argon_neon = linfitter(model=wlmodel,
                                 x=xvals_ar_guess,
                                 y=waves_ar_guess)
-    wavelength_model = fit_model_with_argon_neon(xaxis[~bad_pix_1303]) * u.AA
+    wavelength_model = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
     print("Original Fit\n" + str(fit_model) + "\n")
     print("Fit Using NIST (+Argon) as Well\n" + str(fit_model_with_argon_neon) + "\n")
     
