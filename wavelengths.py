@@ -43,7 +43,7 @@ def initial_wl(calibration_spectra, xlims, bad_pixel_mask, guess_pixels, guess_w
   
   linear_fit_wlmodel = linfitter(model=wlmodel, x=improved_xval_guesses, y=guess_wl)
   wavelengths = linear_fit_wlmodel(xaxis[~bad_pixel_mask]) * u.AA
-  fig, (ax1, ax2) = pl.subplots(1, 2, figsize=(12,4))
+  fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12,4))
   ax1.plot(wavelengths, calibration_spectra)
   ax1.plot(guess_wl, [consideration]*len(guess_wl), 'x', label="Guessed Values");
   ax1.set_xlabel("Wavelength($\AA$)")
@@ -124,7 +124,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
   print("Original Fit\n" + str(fit_model) + "\n")
   print("Fit Using NIST as Well\n" + str(fit_model_with_true_neon) + "\n")
     
-  fig, (ax1, ax2) = pl.subplots(2, 1, figsize=(14,14))
+  fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14,14))
   ax1.plot(initial_wl_soln, spectra)
   ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x')
   ax1.set_ylabel("Intensity")
@@ -133,7 +133,7 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
   ax2.plot(wavelength_model, spectra)
   ax2.vlines(ne_keep_final, np.min(spectra), np.max(spectra), 'r', alpha=0.45, linestyle='--')
   for wl in ne_keep_final:
-      pl.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
+      plt.text(wl+4, np.max(spectra)-np.std(spectra), str(wl) +"$\AA$", rotation=90, ha='right', va='top')
   ax2.set_ylim(np.min(spectra), np.max(spectra));
   ax2.set_xlabel("Air Wavelength [Angstroms]");
   ax2.set_title("Calibration Neon Lamp")
