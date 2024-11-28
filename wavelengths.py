@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from astropy import units as u
+from astropy.table import Column
 from astroquery.nist import Nist
 from astropy.modeling.models import Linear1D
 from astropy.modeling.fitting import LinearLSQFitter
@@ -153,12 +154,12 @@ def wavelength_solver(spectra, xlims, bad_pixel_mask, initial_wl_soln, fit_model
         val2 = checked2.loc[checked2[0] == np.min(checked2)].index[0]
         used_for_guesses2.append(val2)
     
-    ar_keep_final = np.asarray(ar_wl_only_good[used_for_guesses2]).tolist()
+    ar_keep_final = Column(ar_wl_only_good[used_for_guesses2])
     
     ar_rel_only_good = ar_rel_only_good[used_for_guesses2]
     ar_rel_intens = (ar_rel_only_good / ar_rel_only_good.max() * spectra.max())
     
-    ar_pixel_vals = np.asarray(fit_model.inverse(ar_keep_final)).tolist()
+    ar_pixel_vals = fit_model.inverse(ar_keep_final)
     
     xvals_ar_guess = np.concatenate([guess_pixels, ne_pixel_vals, argon_pixels, ar_pixel_vals])
     waves_ar_guess = np.concatenate([guess_wl, ne_keep_final, argon_wls, ar_keep_final])
