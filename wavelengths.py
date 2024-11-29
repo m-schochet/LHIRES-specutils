@@ -538,7 +538,6 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
     ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
     
     ax1.plot(initial_wl_soln, spectra)
-    ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x', label="Neon")
     ax1.plot(ar_keep_final, ar_rel_intens*intensity_scaling, '+', label="Argon")
     ax1.set_ylabel("Intensity")
     ax1.set_xlabel("Wavelength ($\AA$)")
