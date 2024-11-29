@@ -518,17 +518,17 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
     xvals_ar_guess = np.concatenate([guess_pixels, ar_pixel_vals])
     waves_ar_guess = np.concatenate([guess_wl, ar_keep_final])
     if (poly!=True):  
-      fit_model_with_argon_neon = linfitter(model=wlmodel,
+      fit_model_with_argon = linfitter(model=wlmodel,
                                   x=xvals_ar_guess,
                                   y=waves_ar_guess)
     else:
-      fit_model_with_argon_neon = linfitter(model=polymodel2,
+      fit_model_with_argon = linfitter(model=polymodel2,
                                   x=xvals_ar_guess,
                                   y=waves_ar_guess)
       
-    wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
+    wavelength_model2 = fit_model_with_argon(xaxis[~bad_pixel_mask]) * u.AA
     print("Original Fit\n" + str(fit_model) + "\n")
-    print("Fit Using NIST Argon Lines\n" + str(fit_model_with_argon_neon) + "\n")
+    print("Fit Using NIST Argon Lines\n" + str(fit_model_with_argon) + "\n")
     
     fig = plt.figure(layout="constrained")
     fig.set_figheight(12)
@@ -555,7 +555,7 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
       
     guessed_wl = guess_wl
     residuals_guesses = np.array(guessed_wl)  - fit_model(improved_xval_guesses)
-    residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_neon(improved_xval_guesses)
+    residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_argon(improved_xval_guesses)
     
     ax3.plot(improved_xval_guesses, residuals_guesses, 'x', label="Guesses")
     ax3.plot(improved_xval_guesses, residuals_NIST, '+', label="Guesses+NIST")
@@ -564,7 +564,7 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
     ax3.set_ylabel("Wavelength residual ($\AA$)");
     ax3.set_title("Residuals")
     ax3.legend()
-    return fit_model_with_true_argon
+    return fit_model_with_argon
 
 
 def inverse_polymodel(wl_list, wl_model, xlims, bad_pixel_mask, backwards=False):
