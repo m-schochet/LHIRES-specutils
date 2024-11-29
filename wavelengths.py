@@ -557,7 +557,7 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
       
     guessed_wl = guess_wl
     residuals_guesses = np.array(guessed_wl)  - fit_model(improved_xval_guesses)
-    residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_argon(improved_xval_guesses)
+    residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_argon(improved_xval_guesses)
     
     ax3.plot(improved_xval_guesses, residuals_guesses, 'x', label="Guesses")
     ax3.plot(improved_xval_guesses, residuals_NIST, '+', label="Guesses+NIST")
