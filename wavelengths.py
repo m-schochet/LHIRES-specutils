@@ -449,125 +449,125 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
 
     return fit_model_with_argon_neon
 def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses, initial_wl_soln, fit_model, guess_wl, guess_pixels, poly=False, intensity_scaling = 2):
-  """
-  This function is meant to help us get a true *linear or polynomial* wavelength solution after doing initial fitting using guessed pixels-wavelength pairs for spectra
-  which ONLY HAVE ARGON LINES IN THEM
-
-  *Note* This function DOES NOT check every single Argon line in the range from the first wavelength fit. Instead, this function locates the
-  NIST information of the lines used in making guesse and simply uses those to fit a new wavelength solution. 
-  This avoids the lists being incorrect sizes and having errors at every step.
-
-
-  Inputs (8, 10 if needed):
-        spectra: (np.ndarray) the spectra of a calibration lamp (assumed that it was the same used in using wavelengths.intial_wl
-        
-        xlims: (tuple) a set of xmin/xmax values to create an x-axis with
-        
-        bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
-
-        improved_xval_guesses: (np.ndarray) the improved x-axis values using weighted averaging from the wavelengths.intial_wl function
-
-        initial_wl_soln: (np.ndarray) this is the returned wavelength solution from the wavelengths.intial_wl function
-
-        fit_model: (astropy.modeling.fitting.LinearLSQFitter) this is the returned fit model from the wavelengths.intial_wl function
-        
-        guess_wl: (list) the corresponding **Argon** wavelengths that line up with the integer pixel values from the guess_pixels list
-
-        guess_pixels: (list) a set of guessed pixels (MUST BE integers) in the calibration image
-
-        poly: (bool) set this to True if you want to fit using only Argon lines but with a 2-term polynomial instead of linear fit
-        
-        intensity_scaling: (int) a scaling factor for the displayed neon lines from NIST, larger values plot them at larger y-axis values (default is 2)
-        
-  Returns (1):
-        fit_model_with_true_argon: corrected model which uses the NIST lists
-        
-  """
-     
-  xaxis = np.arange(xlims[0], xlims[1], step=1)
-
-  minwave = initial_wl_soln.min()
-  maxwave = initial_wl_soln.max()
-  argon_lines = Nist.query(minwav=minwave,
-                          maxwav=maxwave,
-                          wavelength_type='vac+air',
-                          linename='Ar I')
-  b = np.array([(True if "*" in str(val) else False) for val in argon_lines['Rel.'].value])
-  ar_keep = (argon_lines['Rel.'] != "*") &  (~argon_lines['Rel.'].mask) & (~b)
-  ar_wl_only_good = argon_lines['Observed'][ar_keep]
-  ar_rel_only_good = np.array([float(x) for x in argon_lines['Rel.'][ar_keep]])
-        
-  wavelengths2 = np.array(ar_wl_only_good)
-  df2 = pd.DataFrame(wavelengths2)
-        
-  used_for_guesses2 = []
-  
-  for i in range(len(guess_wl)):
+    """
+    This function is meant to help us get a true *linear or polynomial* wavelength solution after doing initial fitting using guessed pixels-wavelength pairs for spectra
+    which ONLY HAVE ARGON LINES IN THEM
+    
+    *Note* This function DOES NOT check every single Argon line in the range from the first wavelength fit. Instead, this function locates the
+    NIST information of the lines used in making guesse and simply uses those to fit a new wavelength solution. 
+    This avoids the lists being incorrect sizes and having errors at every step.
+    
+    
+    Inputs (8, 10 if needed):
+          spectra: (np.ndarray) the spectra of a calibration lamp (assumed that it was the same used in using wavelengths.intial_wl
+          
+          xlims: (tuple) a set of xmin/xmax values to create an x-axis with
+          
+          bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
+    
+          improved_xval_guesses: (np.ndarray) the improved x-axis values using weighted averaging from the wavelengths.intial_wl function
+    
+          initial_wl_soln: (np.ndarray) this is the returned wavelength solution from the wavelengths.intial_wl function
+    
+          fit_model: (astropy.modeling.fitting.LinearLSQFitter) this is the returned fit model from the wavelengths.intial_wl function
+          
+          guess_wl: (list) the corresponding **Argon** wavelengths that line up with the integer pixel values from the guess_pixels list
+    
+          guess_pixels: (list) a set of guessed pixels (MUST BE integers) in the calibration image
+    
+          poly: (bool) set this to True if you want to fit using only Argon lines but with a 2-term polynomial instead of linear fit
+          
+          intensity_scaling: (int) a scaling factor for the displayed neon lines from NIST, larger values plot them at larger y-axis values (default is 2)
+          
+    Returns (1):
+          fit_model_with_true_argon: corrected model which uses the NIST lists
+          
+    """
+       
+    xaxis = np.arange(xlims[0], xlims[1], step=1)
+    
+    minwave = initial_wl_soln.min()
+    maxwave = initial_wl_soln.max()
+    argon_lines = Nist.query(minwav=minwave,
+                            maxwav=maxwave,
+                            wavelength_type='vac+air',
+                            linename='Ar I')
+    b = np.array([(True if "*" in str(val) else False) for val in argon_lines['Rel.'].value])
+    ar_keep = (argon_lines['Rel.'] != "*") &  (~argon_lines['Rel.'].mask) & (~b)
+    ar_wl_only_good = argon_lines['Observed'][ar_keep]
+    ar_rel_only_good = np.array([float(x) for x in argon_lines['Rel.'][ar_keep]])
+          
+    wavelengths2 = np.array(ar_wl_only_good)
+    df2 = pd.DataFrame(wavelengths2)
+          
+    used_for_guesses2 = []
+    
+    for i in range(len(guess_wl)):
       checker2 = guess_wl[i]
       checked2 = np.abs((df2 - checker2))
       val2 = checked2.loc[checked2[0] == np.min(checked2)].index[0]
       used_for_guesses2.append(val2)
-
-  ar_keep_final = Column(ar_wl_only_good[used_for_guesses2])
-  
-  ar_rel_only_good = ar_rel_only_good[used_for_guesses2]
-  ar_rel_intens = (ar_rel_only_good / ar_rel_only_good.max() * spectra.max())
-  
-  ar_pixel_vals = fit_model.inverse(ar_keep_final)
-  
-  xvals_ar_guess = np.concatenate([guess_pixels, ar_pixel_vals])
-  waves_ar_guess = np.concatenate([guess_wl, ar_keep_final])
-  if (poly!=True):  
-    fit_model_with_argon_neon = linfitter(model=wlmodel,
-                                x=xvals_ar_guess,
-                                y=waves_ar_guess)
-  else:
-    fit_model_with_argon_neon = linfitter(model=polymodel2,
-                                x=xvals_ar_guess,
-                                y=waves_ar_guess)
     
-  wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
-  print("Original Fit\n" + str(fit_model) + "\n")
-  print("Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
-  
-  fig = plt.figure(layout="constrained")
-  fig.set_figheight(12)
-  fig.set_figwidth(12)
-  ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
-  ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
-  ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
-  
-  ax1.plot(initial_wl_soln, spectra)
-  ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x', label="Neon")
-  ax1.plot(ar_keep_final, ar_rel_intens*intensity_scaling, '+', label="Argon")
-  ax1.set_ylabel("Intensity")
-  ax1.set_xlabel("Wavelength ($\AA$)")
-  ax1.legend()
+    ar_keep_final = Column(ar_wl_only_good[used_for_guesses2])
     
-  ax2.plot(wavelength_model2, spectra)
-  ax2.vlines(ar_keep_final, np.min(spectra), np.max(spectra), 'orange', alpha=0.25, linestyle='--', label="Argon")
-  for wl2 in ar_keep_final:
-      ax2.text(wl2+4, np.max(spectra)-np.std(spectra), str(wl2) +"$\AA$", rotation=90, ha='right', va='top')
-  
-  ax2.set_ylim(np.min(spectra), np.max(spectra));
-  ax2.set_xlabel("Wavelength ($\AA$)");
-  ax2.set_title("Calibration Neon Lamp")
-  ax2.legend()
+    ar_rel_only_good = ar_rel_only_good[used_for_guesses2]
+    ar_rel_intens = (ar_rel_only_good / ar_rel_only_good.max() * spectra.max())
     
-  guessed_wl = guess_wl + argon_wls
-  residuals_guesses = np.array(guessed_wl)  - fit_model(improved_xval_guesses)
-  residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_neon(improved_xval_guesses)
-  
-  ax3.plot(improved_xval_guesses, residuals_guesses, 'x', label="Guesses")
-  ax3.plot(improved_xval_guesses, residuals_NIST, '+', label="Guesses+NIST")
+    ar_pixel_vals = fit_model.inverse(ar_keep_final)
+    
+    xvals_ar_guess = np.concatenate([guess_pixels, ar_pixel_vals])
+    waves_ar_guess = np.concatenate([guess_wl, ar_keep_final])
+    if (poly!=True):  
+      fit_model_with_argon_neon = linfitter(model=wlmodel,
+                                  x=xvals_ar_guess,
+                                  y=waves_ar_guess)
+    else:
+      fit_model_with_argon_neon = linfitter(model=polymodel2,
+                                  x=xvals_ar_guess,
+                                  y=waves_ar_guess)
+      
+    wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
+    print("Original Fit\n" + str(fit_model) + "\n")
+    print("Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
+    
+    fig = plt.figure(layout="constrained")
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
+    ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
+    ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
+    ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
+    
+    ax1.plot(initial_wl_soln, spectra)
+    ax1.plot(ne_keep_final, ne_rel_intens*intensity_scaling, 'x', label="Neon")
+    ax1.plot(ar_keep_final, ar_rel_intens*intensity_scaling, '+', label="Argon")
+    ax1.set_ylabel("Intensity")
+    ax1.set_xlabel("Wavelength ($\AA$)")
+    ax1.legend()
+      
+    ax2.plot(wavelength_model2, spectra)
+    ax2.vlines(ar_keep_final, np.min(spectra), np.max(spectra), 'orange', alpha=0.25, linestyle='--', label="Argon")
+    for wl2 in ar_keep_final:
+        ax2.text(wl2+4, np.max(spectra)-np.std(spectra), str(wl2) +"$\AA$", rotation=90, ha='right', va='top')
+    
+    ax2.set_ylim(np.min(spectra), np.max(spectra));
+    ax2.set_xlabel("Wavelength ($\AA$)");
+    ax2.set_title("Calibration Neon Lamp")
+    ax2.legend()
+      
+    guessed_wl = guess_wl + argon_wls
+    residuals_guesses = np.array(guessed_wl)  - fit_model(improved_xval_guesses)
+    residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_neon(improved_xval_guesses)
+    
+    ax3.plot(improved_xval_guesses, residuals_guesses, 'x', label="Guesses")
+    ax3.plot(improved_xval_guesses, residuals_NIST, '+', label="Guesses+NIST")
+    
+    ax3.set_xlabel("Pixel Coordinate")
+    ax3.set_ylabel("Wavelength residual ($\AA$)");
+    ax3.set_title("Residuals")
+    ax3.legend()
+    return fit_model_with_true_argon
 
-  ax3.set_xlabel("Pixel Coordinate")
-  ax3.set_ylabel("Wavelength residual ($\AA$)");
-  ax3.set_title("Residuals")
-  ax3.legend()
-  return fit_model_with_true_argon
 
-  
 def inverse_polymodel(wl_list, wl_model, xlims, bad_pixel_mask, backwards=False):
     """
       This function is meant to help us get the inverse pixel values for a given polynomial wavelenght 
