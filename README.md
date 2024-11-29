@@ -30,7 +30,7 @@ This is the essential basic functions used to reduce and get data from LHIRES sp
 	d) tracer	
 		This function is the culmination of the basics.py file, 
 		and it determines an accurate trace for whatever object is
-		observed through an LHIRES slit simply plots an LHIRES. The
+		observed through an LHIRES slit and plots it (optionally). The
 		returned variables from this function are essentially
 		important for making spectra and wavelength solutions 
 
