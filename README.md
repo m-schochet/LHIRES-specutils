@@ -2,7 +2,7 @@
 
 Hello and welcome! 
 
-Before continuing any further, **make sure that spectra used for these tools are done using the typical High Resolution grating on the SHELYAK LHIRES-III spectrograph [Link to LHIRES-III](https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en)(https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en).**
+Before continuing any further, **make sure that spectra used for these tools are done using the typical High Resolution grating on the [SHELYAK LHIRES-III](https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en) spectrograph .**
 
 This github provides a set of functions and data reduction tools put together for interaction with spectra produced. In this github you will find the following.
 
@@ -77,7 +77,7 @@ Inside here are a number the functions:
 		wavelength solution using only a list of associated pixel
 		values and wavelengths of the associated line. 
 
-**Note: This function since it only uses guesses *does not* discriminate between Neon or Argon lines. The list of guessed pixels and wavelengths can combine these two **
+**Note: This function since it only uses guesses *does not* discriminate between Neon or Argon lines. The list of guessed pixels and wavelengths can combine these two**
 
 	b) wavelength_solver
 		This function is the bulk of this file, and it takes in a
