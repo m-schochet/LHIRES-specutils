@@ -2,7 +2,7 @@
 
 Hello and welcome! 
 
-Before continuing any further, **make sure that spectra used for these tools are done using the typical High Resolution grating on the SHELYAK LHIRES-III spectrograph [Link to LHIRES-III](https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en)(https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en).
+Before continuing any further, **make sure that spectra used for these tools are done using the typical High Resolution grating on the SHELYAK LHIRES-III spectrograph [Link to LHIRES-III](https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en)(https://www.shelyak.com/produit/spectroscope-lhires-iii/?lang=en).**
 
 This github provides a set of functions and data reduction tools put together for interaction with spectra produced. In this github you will find the following.
 
