@@ -4,7 +4,9 @@ import pandas as pd
 from astropy import units as u
 from astropy.table import Column
 from astroquery.nist import Nist
-from astropy.modeling.models import Linear1D, Polynomial1D
+from astropy.modeling.models import Linear1D
+from astropy.modeling.polynomial import Polynomial1D
+
 from astropy.modeling.fitting import LinearLSQFitter
 
 linfitter = LinearLSQFitter()
