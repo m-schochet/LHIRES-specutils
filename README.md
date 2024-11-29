@@ -86,7 +86,10 @@ Inside here are a number the functions:
 
 **Note: This function since it requires a split between Neon or Argon line-pixel guess pairs. Without this, the function cannot fit properly**
 
-**Note 2: As of**
-	
+~~**Note 2: As of**~~
 	commit 758a5dd
-**This function can only fit linear wavelength solutions. This should be amended soon and allow for slightly curved two-term polynomial or higher solutions**
+~~**This function can only fit linear wavelength solutions. This should be amended soon and allow for slightly curved two-term polynomial or higher solutions**~~
+
+**Addendum to Note 2: There are now 3 separate wavelength_solver functions in wavelengths.py as of**
+	commit e8d0a77
+**wavelength_lin_solver fits a linear solution to a pair of Neon/Argon lines; wavelength_polynomial_solver does the same but with a 2-term polynomial; wavelength_argon_solver meanwhile only fits a selection of Argon lines to either a polynomial or linear solution. This solution is not *clean* but it will work for the time being**
