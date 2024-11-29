@@ -11,9 +11,10 @@ linfitter = LinearLSQFitter()
 wlmodel = Linear1D()
 polymodel2 = Polynomial1D(degree=2)
 
-def initial_wl(calibration_spectra, xlims, bad_pixel_mask, guess_pixels, guess_wl, npix_cutout, manual_scale=1.01):
+def initial_wl(calibration_spectra, xlims, bad_pixel_mask, guess_wl, guess_pixels, npix_cutout, manual_scale=1.01):
 
   """
+  
   This function is meant to help us get an initial feel for the wavelength solution for a calibration spectra when given a set of guessed pixels of lines and associated wavelengths of those lines
 
   *Note, since this function simply takes *guesses* and turns them into a solution, one can provide pixel/wavelength pairs for non-Neon lines too*
@@ -25,10 +26,10 @@ def initial_wl(calibration_spectra, xlims, bad_pixel_mask, guess_pixels, guess_w
         
         bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
         
-        guess_pixels: (list) a set of guessed pixels (MUST BE integers) in the calibration image (can be found using spectra.point_finder)
-        
         guess_wl: (list) the corresponding wavelengths that line up with the integer pixel values from the guess_pixels list
         
+        guess_pixels: (list) a set of guessed pixels (MUST BE integers) in the calibration image (can be found using spectra.point_finder)
+      
         npix_cutout: (int) a number of x-axis values to +/- cut around when measuring and adjusting guessed x-axis values
 
         manual_scale: (float) a number used to scale the points representing "guesses" on the graphs produced by this function (default is 1.01)
@@ -146,8 +147,8 @@ def wavelength_lin_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses,
     print("Fit Using NIST as Well\n" + str(fit_model_with_true_neon) + "\n")
     
     fig = plt.figure(layout="constrained")
-    fig.set_figheight(16)
-    fig.set_figwidth(16)
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
     ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
     ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
     ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
@@ -217,8 +218,8 @@ def wavelength_lin_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses,
     print("Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
     
     fig = plt.figure(layout="constrained")
-    fig.set_figheight(16)
-    fig.set_figwidth(16)
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
     ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
     ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
     ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
@@ -257,7 +258,7 @@ def wavelength_lin_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses,
     
     return fit_model_with_argon_neon
   
-def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses, initial_wl_soln, fit_model, guess_wl, guess_pixels, backwards = False, intensity_scaling = 2, argon=False, argon_wls=[], argon_pixels=[]):
+def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses, initial_wl_soln, fit_model, guess_wl, guess_pixels, intensity_scaling = 2, argon=False, argon_wls=[], argon_pixels=[]):
   """
   This function is meant to help us get a true *polynomial* wavelength solution after doing initial fitting using guessed pixels-wavelength pairs
 
@@ -281,9 +282,6 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
         guess_wl: (list) the corresponding **NEON** wavelengths that line up with the integer pixel values from the guess_pixels list
 
         guess_pixels: (list) a set of guessed pixels (MUST BE integers) in the calibration image
-
-        backwards: (bool) set this value to True in the event the wavelength solution is backwards for a certain image. If you do not set this to True for a backwards
-                        solution, then the pixel values we take from the solution will be flipped
         
         intensity_scaling: (int) a scaling factor for the displayed neon lines from NIST, larger values plot them at larger y-axis values (default is 2)
 
@@ -340,7 +338,9 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
   if (argon!=True):
     print("Original Linear Fit\n" + str(fit_model) + "\n")
     print("Polynomial Fit Using NIST as Well\n" + str(fit_model_with_true_neon) + "\n")
-    fig = plt.figure(layout="constrained",figsize=(10,10))
+    fig = plt.figure(layout="constrained")
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
     ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
     ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
     ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
@@ -368,9 +368,8 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
     ax3.set_ylabel("Wavelength residual ($\AA$)");
     ax3.set_title("Residuals")
     ax3.legend()
-    
- 
     return fit_model_with_true_neon
+    
   else:
     argon_lines = Nist.query(minwav=minwave,
                             maxwav=maxwave,
@@ -410,8 +409,8 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
     print("Polynomial Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
     
     fig = plt.figure(layout="constrained")
-    fig.set_figheight(16)
-    fig.set_figwidth(16)
+    fig.set_figheight(12)
+    fig.set_figwidth(12)
     ax1 = plt.subplot2grid((3,4), (0, 0), colspan=4, rowspan=1)
     ax2 = plt.subplot2grid((3,4), (1, 0), colspan=4, rowspan=1)
     ax3 = plt.subplot2grid((3,4), (2, 0), colspan=4, rowspan=1)
@@ -465,7 +464,8 @@ def inverse_polymodel(wl_list, wl_model, xlims, bad_pixel_mask, backwards=False)
             
             bad_pixel_mask: (np.ma.maskedarray) this is an array of x-axis values being masked over for one reason or another (also from spectra.spectra_producer)
     
-            backward: (bool) set to True if the wavelength solution flips the spectra (i.e., "runs backward")
+            backward: (bool) set this value to True in the event the wavelength solution is backwards for a certain image. If you do not set this to True for a backwards
+                        solution, then the pixel values we take from the solution will be flipped
             
       Returns (1):
             interp_wls: (list) an interpolated pixel value list
@@ -476,5 +476,4 @@ def inverse_polymodel(wl_list, wl_model, xlims, bad_pixel_mask, backwards=False)
     if(backwards==True):
         return np.interp(wl_list, wavelengths[::-1], xvals[::-1])
     else:
-      def inverse_polymodel():
-          return np.interp(wl_list, wavelengths, xvals) 
+      return np.interp(wl_list, wavelengths, xvals) 
