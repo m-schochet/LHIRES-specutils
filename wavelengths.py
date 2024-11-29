@@ -528,7 +528,7 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
       
     wavelength_model2 = fit_model_with_argon_neon(xaxis[~bad_pixel_mask]) * u.AA
     print("Original Fit\n" + str(fit_model) + "\n")
-    print("Fit Using NIST (+Argon) and no Guesses\n" + str(fit_model_with_argon_neon) + "\n")
+    print("Fit Using NIST Argon Lines\n" + str(fit_model_with_argon_neon) + "\n")
     
     fig = plt.figure(layout="constrained")
     fig.set_figheight(12)
