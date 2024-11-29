@@ -550,10 +550,10 @@ def wavelength_argon_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesse
     
     ax2.set_ylim(np.min(spectra), np.max(spectra));
     ax2.set_xlabel("Wavelength ($\AA$)");
-    ax2.set_title("Calibration Neon Lamp")
+    ax2.set_title("Calibration Lamp")
     ax2.legend()
       
-    guessed_wl = guess_wl + argon_wls
+    guessed_wl = guess_wl
     residuals_guesses = np.array(guessed_wl)  - fit_model(improved_xval_guesses)
     residuals_NIST = np.array(waves_ar_guess)  - fit_model_with_true_neon(improved_xval_guesses)
     
