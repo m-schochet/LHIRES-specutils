@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import astropy
 
-def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, npix_tup:tuple, xlims=None, size=(10, 6), 
+def spectra_producer(obj_image, fit_model, mean_weights, npix_tup, xlims=None, size=(10, 6), 
     plot_spectra=False, bad_pix_mask=None, obj_name=""):
 
     """
@@ -13,7 +13,7 @@ def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, n
     downselect a smaller portion of the original spectrum **
 
     
-    Inputs (4 needed, 8 possible):
+    Inputs (4 needed, 9 possible):
         obj_image: (np.ndarray) image to use for the spectra (must be a fits file that has already been placed into a variable with fits.getdata)
         
         fit_model: (astropy.modeling.models) this is a returned model trace, can be gotten from the basics.py/tracer function
@@ -21,21 +21,23 @@ def spectra_producer(obj_image:np.ndarray, fit_model, mean_weights:np.ndarray, n
         mean_weights: (np.ndarray) this is the mean_trace_profile returned variable from basics.py/tracer, used to weight our spectra
         
         npix_tup: (tuple) use this to input the npix_ret tuple from basics.py/tracer so that we can cut out the spectra
-
-        size: (tuple) use this to change the size of the plotted spectra (Default is 10,6)
-        
-        plot_spectra: (boolean) set to True if you want to see the spectra
-
-        obj_name: (string) insert the name of the object for a plot title herex
             
         Optional: 
+            xlims: (tuple) a tuple only used when the xaxis is shortened (i.e., a trace extends only partially through the image)
+
+            size: (tuple) use this to change the size of the plotted spectra (Default is 10,6)
+            
+            plot_spectra: (boolean) set to True if you want to see the spectra
+            
             bad_pix_mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask
+    
+            obj_name: (string) insert the name of the object for a plot title here
 
     Returns:
-        spectra: (np.ndarray) the spectra of the opject
-        
+        spectra: (np.ndarray) the spectra of the opject   
     """
-    
+
+        
     image_array = np.array(obj_image)
     xvals = np.arange(image_array.shape[1])
     xvals=xvals[xlims[0]:xlims[1]]
@@ -75,12 +77,13 @@ def point_finder(spectra, xaxis, mask, size=(8,4)):
         
         mask: (np.ma.maskedarray) if there is a mask of bad pixels from the basics.py/tracer function, use this as an input of that mask (otherwise simply use None)
 
-        size: (tuple) variable to change the size of the plotted image
+        Optional:
+            size: (tuple) variable to change the size of the plotted image
+            
     Returns:
         Nothing, simply a plotter
-        
-
     """
+    
     fig = plt.figure(figsize=size)
     ax = fig.add_subplot(111)
     spec = ax.plot(xaxis[~mask], spectra)
