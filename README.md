@@ -97,3 +97,7 @@ Inside here are a number the functions:
 	commit e8d0a77
  
 **wavelength_lin_solver fits a linear solution to a pair of Neon/Argon lines; wavelength_polynomial_solver does the same but with a 2-term polynomial; wavelength_argon_solver meanwhile only fits a selection of Argon lines to either a polynomial or linear solution. This solution is not *clean* but it will work for the time being**
+
+(new)
+## central.py
+This file helps determine central wavelengths given micrometer settings and images along with determining micrometer settings given a central wavelength
