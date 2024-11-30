@@ -363,8 +363,8 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
     residuals_guesses = np.array(guess_wl)  - fit_model(improved_xval_guesses)
     residuals_NIST = np.array(ne_keep_final)  - fit_model_with_true_neon(improved_xval_guesses)
     
-    ax3.plot(improved_xval_guesses_alt, residuals_guesses, 'x', label="Only Guesses")
-    ax3.plot(improved_xval_guesses_alt, residuals_NIST, '+', label="Only NIST")
+    ax3.plot(improved_xval_guesses, residuals_guesses, 'x', label="Only Guesses")
+    ax3.plot(improved_xval_guesses, residuals_NIST, '+', label="Only NIST")
     
     ax3.set_xlabel("Pixel Coordinate")
     ax3.set_ylabel("Wavelength residual ($\AA$)");
