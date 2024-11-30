@@ -50,7 +50,7 @@ def get_central_wls(list_wls, list_settings):
     This function is meant get a solution function whereby you can insert a micrometer setting and get back out a central wavelength 
     
     Inputs (2 needed):
-        list_wls: (list) a list of central wavelengths
+        list_wls: (list) a list of central wavelengths (NOTE: These MUST be astropy unit objects that have had their .value taken)
         
         list_settings: (list) associated micrometer settings to determine to central wavelength
         
@@ -70,7 +70,7 @@ def get_micrometer(list_wls, list_settings):
     This function is meant get a solution function whereby you can insert a central wavelength and get back out a micrometer setting 
     
     Inputs (2 needed):
-        list_wls: (list) a list of central wavelengths
+        list_wls: (list) a list of central wavelengths (NOTE: These MUST be astropy unit objects that have had their .value taken)
         
         list_settings: (list) associated micrometer settings to determine to central wavelength
         
