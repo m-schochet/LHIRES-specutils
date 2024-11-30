@@ -44,7 +44,7 @@ def central_wl(obj_image, fit_model, xlims=None, obj_name=None, micrometer=None)
     return wl_at_cent
 
 
-def micrometer_solution(list_wls, list_settings):
+def get_central_wls(list_wls, list_settings):
 
     """
     This function is meant get a solution function whereby you can insert a micrometer setting and get back out a central wavelength 
@@ -59,12 +59,12 @@ def micrometer_solution(list_wls, list_settings):
         micrometer_model: (astropy.modeling.functional_models.Linear1D) fit model which intakes micrometer settings and outputs central wavelengths
         
     """
-    linear_micrometer = linfitter(model=wlmodel, x=list_settings, y=list_wls)
-    return linear_micrometer
+    central_wl_model = linfitter(model=wlmodel, x=list_settings, y=list_wls)
+    return central_wl_model
 
 
 
-def central_wl_solution(list_wls, list_settings):
+def get_micrometer(list_wls, list_settings):
 
     """
     This function is meant get a solution function whereby you can insert a central wavelength and get back out a micrometer setting 
@@ -79,5 +79,5 @@ def central_wl_solution(list_wls, list_settings):
         central_wl_model: (astropy.modeling.functional_models.Linear1D) fit model which intakes micrometer settings and outputs central wavelengths
         
     """
-    central_wl_model = linfitter(model=wlmodel, x=list_wls, y=list_settings)
-    return central_wl_model
+    micrometer_model = linfitter(model=wlmodel, x=list_wls, y=list_settings)
+    return micrometer_model
