@@ -129,7 +129,7 @@ def wavelength_lin_solver(spectra, xlims, bad_pixel_mask, improved_xval_guesses,
       val = checked.loc[checked[0] == np.min(checked)].index[0]
       used_for_guesses.append(val)
 
-  ne_keep_final = ne_wl_only_good[used_for_guesses]
+  ne_keep_final = Column(ne_wl_only_good[used_for_guesses])
   ne_rel_only_good = ne_rel_only_good[used_for_guesses]
   ne_rel_intens = (ne_rel_only_good / ne_rel_only_good.max() * spectra.max())
 
@@ -322,7 +322,7 @@ def wavelength_polynomial_solver(spectra, xlims, bad_pixel_mask, improved_xval_g
       val = checked.loc[checked[0] == np.min(checked)].index[0]
       used_for_guesses.append(val)
         
-  ne_keep_final = ne_wl_only_good[used_for_guesses]
+  ne_keep_final = Column(ne_wl_only_good[used_for_guesses])
   ne_rel_only_good = ne_rel_only_good[used_for_guesses]
   ne_rel_intens = (ne_rel_only_good / ne_rel_only_good.max() * spectra.max())
 
