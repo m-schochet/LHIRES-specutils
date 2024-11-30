@@ -1,17 +1,21 @@
+from astropy.modeling.models import Linear1D
+from astropy.modeling.fitting import LinearLSQFitter
+from astropy import units as u
+
+linfitter = LinearLSQFitter()
+wlmodel = Linear1D()
+
+
 def central_wl(obj_image, fit_model, xlims=None, obj_name=None, micrometer=None):
 
     """
-    This function is meant to help us create a spectra and check to make sure it looks alright. 
+    This function is meant to help us get the central wavelength of an image which has been fit to a wavelength solution
    
-    ** Note that for the time being, this function can only get spectra if it is cutting out a portion along the y-axis 
-    that is the same size as the npix_tup from the basics.py/tracer function. Future functionality will include the ability to
-    downselect a smaller portion of the original spectrum **
-
     
     Inputs (2 needed, 4 possible):
         obj_image: (np.ndarray) image to use for the spectra (must be a fits file that has already been placed into a variable with fits.getdata)
         
-        fit_model: (astropy.modeling.polynomial.Polynomial1D OR astropy.modeling.functional_models.LinearID) this is a returned wavelength solution model,
+        fit_model: (astropy.modeling.polynomial.Polynomial1D OR astropy.modeling.functional_models.Linear1D) this is a returned wavelength solution model,
                     can be gotten from the wavelengths.py functions
                     
         Optional:
@@ -38,3 +42,42 @@ def central_wl(obj_image, fit_model, xlims=None, obj_name=None, micrometer=None)
     if((micrometer is not None) & (obj_name is not None)):
         print(str(obj_name) + " at micrometer setting " + str(micrometer) + " gives a central wavelength of " + str(wl_at_cent))
     return wl_at_cent
+
+
+def micrometer_solution(list_wls, list_settings):
+
+    """
+    This function is meant get a solution function whereby you can insert a micrometer setting and get back out a central wavelength 
+    
+    Inputs (2 needed):
+        list_wls: (list) a list of central wavelengths
+        
+        list_settings: (list) associated micrometer settings to determine to central wavelength
+        
+        
+    Returns (1):
+        micrometer_model: (astropy.modeling.functional_models.Linear1D) fit model which intakes micrometer settings and outputs central wavelengths
+        
+    """
+    linear_micrometer = linfitter(model=wlmodel, x=list_settings, y=list_wls)
+    return linear_micrometer
+
+
+
+def central_wl_solution(list_wls, list_settings):
+
+    """
+    This function is meant get a solution function whereby you can insert a central wavelength and get back out a micrometer setting 
+    
+    Inputs (2 needed):
+        list_wls: (list) a list of central wavelengths
+        
+        list_settings: (list) associated micrometer settings to determine to central wavelength
+        
+        
+    Returns (1):
+        central_wl_model: (astropy.modeling.functional_models.Linear1D) fit model which intakes micrometer settings and outputs central wavelengths
+        
+    """
+    central_wl_model = linfitter(model=wlmodel, x=list_wls, y=list_settings)
+    return central_wl_model
