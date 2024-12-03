@@ -1,6 +1,7 @@
 from astropy.modeling.models import Linear1D
 from astropy.modeling.fitting import LinearLSQFitter
 from astropy import units as u
+import numpy as np
 
 linfitter = LinearLSQFitter()
 wlmodel = Linear1D()
