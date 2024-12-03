@@ -1,4 +1,4 @@
-# LHIRES Spectroscopy Utilities (LHIRES-specutils)
+# LHIRES Spectroscopic Utilities (LHIRES-specutils)
 
 Hello and welcome! This is a github to host files related to projects as a part of the course AST4723C - Advanced Observational Techniques taken in Fall 2024 at the University of Florida.
 
